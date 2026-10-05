@@ -13,7 +13,13 @@ jobs:
       - name: Download and convert new cover image
         run: |
           curl -L --fail --retry 3 "https://at.adobe.com/6hmr1b6OV1FBqPiK" -o cover-source.png
-          convert cover-source.png -resize 1000x400! -quality 85 "cover image.jpg"
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image
+          im = Image.open("cover-source.png").convert("RGB")
+          im = im.resize((1000, 400), Image.Resampling.LANCZOS)
+          im.save("cover image.jpg", "JPEG", quality=85, optimize=True)
+          PY
           rm cover-source.png
           file "cover image.jpg"
       - name: Commit cover image
