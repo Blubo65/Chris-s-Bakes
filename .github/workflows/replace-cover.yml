@@ -10,13 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Download new cover image
+      - name: Download and convert new cover image
         run: |
-          curl -L --fail --retry 3 "https://at.adobe.com/6hmr1b6OV1FBqPiK" -o "cover image.jpg"
+          curl -L --fail --retry 3 "https://at.adobe.com/6hmr1b6OV1FBqPiK" -o cover-source.png
+          convert cover-source.png -resize 1000x400! -quality 85 "cover image.jpg"
+          rm cover-source.png
           file "cover image.jpg"
       - name: Commit cover image
         run: |
           git config user.name github-actions
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add "cover image.jpg"
-          git diff --cached --quiet || (git commit -m "Replace website cover image" && git push)
+          git diff --cached --quiet || (git commit -m "Use JPEG format for new website cover" && git push)
