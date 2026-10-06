@@ -1,0 +1,67 @@
+name: Validate recipe website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate HTML and inline JavaScript
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          import re
+
+          html = Path("index.html").read_text(encoding="utf-8")
+
+          if "<!DOCTYPE html>" not in html:
+              raise SystemExit("index.html is missing the HTML doctype")
+
+          scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
+          inline = "\n".join(scripts)
+          Path("/tmp/recipe-site.js").write_text(inline, encoding="utf-8")
+
+          m = re.search(r"const STARTER_RECIPES=(\\[.*?\\]);\\s*const STARTER_SYNC_IDS", inline, re.S)
+          if not m:
+              raise SystemExit("STARTER_RECIPES could not be located")
+
+          recipes = json.loads(m.group(1))
+          ids = [r.get("id") for r in recipes]
+          if len(ids) != len(set(ids)):
+              raise SystemExit("Duplicate recipe IDs found")
+
+          required = ("id", "name", "category", "ingredients", "method")
+          for r in recipes:
+              missing = [k for k in required if not str(r.get(k, "")).strip()]
+              if missing:
+                  raise SystemExit(f"Recipe {r.get('id')} is missing: {', '.join(missing)}")
+
+          # Check repository-local image references used by the recipe data and
+          # explicit legacy photo mappings. Ignore remote/data URLs.
+          refs = set()
+          for r in recipes:
+              p = r.get("photo", "")
+              if p and not re.match(r"^(?:https?:|data:|blob:)", p):
+                  refs.add(p)
+          for match in re.finditer(r"['"]([^'"]+\\.(?:jpg|jpeg|png|webp|gif|svg))['"]", inline, re.I):
+              p = match.group(1)
+              if not re.match(r"^(?:https?:|data:|blob:)", p):
+                  refs.add(p)
+
+          missing_images = sorted(p for p in refs if not Path(p).exists())
+          if missing_images:
+              raise SystemExit("Missing local image files:\n" + "\n".join(missing_images))
+
+          print(f"Validated {len(recipes)} starter recipes and {len(refs)} local image references.")
+          PY
+
+          node --check /tmp/recipe-site.js
