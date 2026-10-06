@@ -26,11 +26,11 @@ jobs:
           if "<!DOCTYPE html>" not in html:
               raise SystemExit("index.html is missing the HTML doctype")
 
-          scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
+          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
           inline = "\n".join(scripts)
           Path("/tmp/recipe-site.js").write_text(inline, encoding="utf-8")
 
-          m = re.search(r"const STARTER_RECIPES=(\\[.*?\\]);\\s*const STARTER_SYNC_IDS", inline, re.S)
+          m = re.search(r"const STARTER_RECIPES=(\[.*?\]);\s*const STARTER_SYNC_IDS", inline, re.S)
           if not m:
               raise SystemExit("STARTER_RECIPES could not be located")
 
@@ -52,7 +52,7 @@ jobs:
               p = r.get("photo", "")
               if p and not re.match(r"^(?:https?:|data:|blob:)", p):
                   refs.add(p)
-          for match in re.finditer(r"['"]([^'"]+\\.(?:jpg|jpeg|png|webp|gif|svg))['"]", inline, re.I):
+          for match in re.finditer(r"['"]([^'"]+\.(?:jpg|jpeg|png|webp|gif|svg))['"]", inline, re.I):
               p = match.group(1)
               if not re.match(r"^(?:https?:|data:|blob:)", p):
                   refs.add(p)
