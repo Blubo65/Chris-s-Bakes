@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate HTML and inline JavaScript
+      - name: Validate recipe data and local images
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -22,14 +22,11 @@ jobs:
           import re
 
           html = Path("index.html").read_text(encoding="utf-8")
-
           if "<!DOCTYPE html>" not in html:
               raise SystemExit("index.html is missing the HTML doctype")
 
           scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
           inline = "\n".join(scripts)
-          Path("/tmp/recipe-site.js").write_text(inline, encoding="utf-8")
-
           m = re.search(r"const STARTER_RECIPES=(\[.*?\]);\s*const STARTER_SYNC_IDS", inline, re.S)
           if not m:
               raise SystemExit("STARTER_RECIPES could not be located")
@@ -45,8 +42,6 @@ jobs:
               if missing:
                   raise SystemExit(f"Recipe {r.get('id')} is missing: {', '.join(missing)}")
 
-          # Check repository-local image references used by the recipe data and
-          # explicit legacy photo mappings. Ignore remote/data URLs.
           refs = set()
           for r in recipes:
               p = r.get("photo", "")
@@ -64,4 +59,13 @@ jobs:
           print(f"Validated {len(recipes)} starter recipes and {len(refs)} local image references.")
           PY
 
+      - name: Validate JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path("index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
+          Path("/tmp/recipe-site.js").write_text("\n".join(scripts), encoding="utf-8")
+          PY
           node --check /tmp/recipe-site.js
