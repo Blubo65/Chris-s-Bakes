@@ -1,7 +1,5 @@
 name: Replace website cover image
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
