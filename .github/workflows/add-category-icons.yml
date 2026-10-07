@@ -1,5 +1,5 @@
 name: Add modern category icons
-# retry after matching fix
+# retry after boundary matching fix v2
 on:
   push:
     paths:
@@ -49,10 +49,14 @@ jobs:
           s=s.replace(marker,js+marker,1)
 
           d=chr(36)+'{'
-          old='<span class="category-tag">'+d+"esc((Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Other']).join(' · '))"+'</span>'
-          new='<span class="category-tag category-icons">'+d+"(Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Other']).map(c=>categoryBadge(c)).join('')"+'</span>'
-          assert old in s, 'recipe category tag not found'
-          s=s.replace(old,new,1)
+          start_tag='<span class="category-tag">'
+          end_tag='</span></div><div class="recipe-info">'
+          i=s.find(start_tag)
+          j=s.find(end_tag,i)
+          assert i>=0 and j>=0, 'recipe category tag boundaries not found'
+          old_end=j+len('</span>')
+          new_tag='<span class="category-tag category-icons">'+d+"(Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Other']).map(c=>categoryBadge(c)).join('')"+'</span>'
+          s=s[:i]+new_tag+s[old_end:]
 
           old="document.getElementById('detailCategory').textContent=(Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Other']).join(' · ');"
           new="document.getElementById('detailCategory').innerHTML='<span class=\"detail-category-icons\">'+(Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Other']).map(c=>categoryBadge(c)).join('')+'</span>';"
