@@ -47,8 +47,9 @@ jobs:
           assert marker in s, 'render function not found'
           s=s.replace(marker,js+marker,1)
 
-          old='<span class="category-tag">\${esc((Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||\\'Other\\']).join(\\' · \\'))}</span>'
-          new='<span class="category-tag category-icons">\${(Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||\\'Other\\']).map(c=>categoryBadge(c)).join(\\'\\')}</span>'
+          d=chr(36)+'{'
+          old='<span class="category-tag">'+d+"esc((Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Other']).join(' · '))"+'</span>'
+          new='<span class="category-tag category-icons">'+d+"(Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Other']).map(c=>categoryBadge(c)).join('')"+'</span>'
           assert old in s, 'recipe category tag not found'
           s=s.replace(old,new,1)
 
