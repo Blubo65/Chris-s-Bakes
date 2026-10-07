@@ -1,8 +1,7 @@
 name: Check website JavaScript
 on:
   push:
-    paths:
-      - 'index.html'
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
