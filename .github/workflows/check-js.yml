@@ -1,0 +1,24 @@
+name: Check website JavaScript
+on:
+  push:
+    paths:
+      - 'index.html'
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract and check JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text()
+          blocks=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I)
+          js='\n'.join(blocks)
+          Path('/tmp/site.js').write_text(js)
+          print('script blocks:',len(blocks),'bytes:',len(js))
+          PY
+          node --check /tmp/site.js
