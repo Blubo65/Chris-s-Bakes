@@ -9,6 +9,17 @@
   "theme_color": "#49634c",
   "orientation": "portrait-primary",
   "icons": [
-    {"src":"https://at.adobe.com/r1vptCa8QdKKaY7X?v=20261008-2","sizes":"any","type":"image/png","purpose":"any maskable"}
+    {
+      "src": "chef-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "chef-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
