@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://blubo65.github.io/Chris-s-Bakes/sitemap.xml
