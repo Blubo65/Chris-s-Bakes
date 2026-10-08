@@ -25,7 +25,7 @@ jobs:
           if "<!DOCTYPE html>" not in html:
               raise SystemExit("index.html is missing the HTML doctype")
 
-          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
+          scripts = re.findall(r"<script(?![^>]*application/ld\\+json)(?:\\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
           inline = "\n".join(scripts)
           m = re.search(r"const STARTER_RECIPES=(\[.*?\]);\s*const STARTER_SYNC_IDS", inline, re.S)
           if not m:
