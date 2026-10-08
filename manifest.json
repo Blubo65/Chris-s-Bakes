@@ -1,0 +1,14 @@
+{
+  "name": "Chris’s Recipe Book",
+  "short_name": "Chris’s Recipes",
+  "description": "Chris’s homemade recipes, family favourites and air fryer ideas.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf8f1",
+  "theme_color": "#49634c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {"src":"logo.png","sizes":"any","type":"image/png","purpose":"any maskable"}
+  ]
+}
