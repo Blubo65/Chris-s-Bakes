@@ -32,7 +32,7 @@ jobs:
               raise SystemExit("STARTER_RECIPES could not be located")
 
           # JavaScript permits trailing commas in arrays/objects; normalise them before JSON validation.
-          recipe_json = re.sub(r",\\s*([}\\]])", r"\\1", m.group(1))
+          recipe_json = re.sub(r",\s*([}\]])", r"\1", m.group(1))
           recipes = json.loads(recipe_json)
           ids = [r.get("id") for r in recipes]
           if len(ids) != len(set(ids)):
