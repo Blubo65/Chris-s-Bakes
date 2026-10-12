@@ -295,7 +295,7 @@ function disableCookWakeLock(){
  cookWakeEnabled=false;
  if(cookWakeLock){const lock=cookWakeLock;cookWakeLock=null;try{lock.release();}catch(e){}}
  const button=document.getElementById('cookWakeButton'),status=document.getElementById('cookWakeStatus');
- if(button){button.textContent='☀ Keep Screen Awake: Off';button.setAttribute('aria-pressed','false');}
+ if(button){button.setAttribute('aria-checked','false');}
  if(status)status.textContent='Off — your screen may lock normally.';
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cookWakeEnabled&&document.getElementById('cookModal')?.classList.contains('open'))requestCookWakeLock(true);});
