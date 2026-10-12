@@ -268,7 +268,38 @@ function parseTimerSeconds(r){const text=String(r?.time||'');const nums=text.mat
 function resetCookTimer(){clearInterval(cookTimerHandle);cookTimerHandle=null;const r=recipes.find(x=>x.id===cookRecipeId);cookTimerSeconds=parseTimerSeconds(r||{});updateCookTimer();document.getElementById('timerButton').textContent=cookTimerSeconds?'▶ Start timer':'Set a timer';}
 function updateCookTimer(){const d=document.getElementById('timerDisplay');if(!d)return;const m=Math.floor(Math.max(0,cookTimerSeconds)/60),sec=Math.max(0,cookTimerSeconds)%60;d.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');d.classList.toggle('done',cookTimerSeconds===0);}
 function toggleCookTimer(){if(cookTimerSeconds<=0){const r=recipes.find(x=>x.id===cookRecipeId);cookTimerSeconds=parseTimerSeconds(r||{});if(!cookTimerSeconds)return;}if(cookTimerHandle){clearInterval(cookTimerHandle);cookTimerHandle=null;document.getElementById('timerButton').textContent='▶ Resume timer';return;}document.getElementById('timerButton').textContent='Ⅱ Pause';cookTimerHandle=setInterval(()=>{cookTimerSeconds--;updateCookTimer();if(cookTimerSeconds<=0){clearInterval(cookTimerHandle);cookTimerHandle=null;document.getElementById('timerButton').textContent='🔔 Time’s up!';try{navigator.vibrate?.([300,150,300]);}catch(e){}}},1000);}
-function startCookMode(id,airFryer){const r=recipes.find(x=>x.id===id);if(!r)return;cookRecipeId=id;cookStepIndex=0;cookServingsValue=parseBaseServings(r);document.getElementById('cookTitle').textContent=r.name;document.getElementById('cookModeLabel').textContent=airFryer?'AIR FRYER MODE':'COOK MODE';renderCookIngredients(r);resetCookTimer();document.getElementById('cookModal').classList.add('open');renderCookStep();}
+async function requestCookWakeLock(silent=false){
+ const status=document.getElementById('cookWakeStatus'),button=document.getElementById('cookWakeButton');
+ if(!('wakeLock' in navigator)){if(status)status.textContent='Your browser does not support keeping the screen awake. You can change the screen timeout in device settings.';return false;}
+ if(document.visibilityState!=='visible')return false;
+ try{
+  if(!cookWakeLock)cookWakeLock=await navigator.wakeLock.request('screen');
+  if(!cookWakeEnabled){if(cookWakeLock){const lock=cookWakeLock;cookWakeLock=null;try{await lock.release();}catch(e){}}return false;}
+  cookWakeLock.addEventListener('release',()=>{cookWakeLock=null;if(cookWakeEnabled&&document.getElementById('cookModal')?.classList.contains('open')&&status)status.textContent='The device released the screen lock. It will try again when you return to this tab.';},{once:true});
+  if(button){button.textContent='☀ Keep Screen Awake: On';button.setAttribute('aria-pressed','true');}
+  if(status)status.textContent='Screen will stay awake while Cook Mode is open, where supported.';
+  return true;
+ }catch(e){
+  cookWakeLock=null;
+  if(status)status.textContent=silent?'Screen lock paused. Return to this tab to try again.':'Could not keep the screen awake. Check your browser or device settings.';
+  return false;
+ }
+}
+async function toggleCookWakeLock(){
+ if(cookWakeEnabled){disableCookWakeLock();return;}
+ cookWakeEnabled=true;
+ const ok=await requestCookWakeLock();
+ if(!ok){cookWakeEnabled=false;const button=document.getElementById('cookWakeButton');if(button){button.textContent='☀ Keep Screen Awake: Off';button.setAttribute('aria-pressed','false');}}
+}
+function disableCookWakeLock(){
+ cookWakeEnabled=false;
+ if(cookWakeLock){const lock=cookWakeLock;cookWakeLock=null;try{lock.release();}catch(e){}}
+ const button=document.getElementById('cookWakeButton'),status=document.getElementById('cookWakeStatus');
+ if(button){button.textContent='☀ Keep Screen Awake: Off';button.setAttribute('aria-pressed','false');}
+ if(status)status.textContent='Keep your screen on while following this recipe.';
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cookWakeEnabled&&document.getElementById('cookModal')?.classList.contains('open'))requestCookWakeLock(true);});
+function startCookMode(id,airFryer){const r=recipes.find(x=>x.id===id);if(!r)return;disableCookWakeLock();cookRecipeId=id;cookStepIndex=0;cookServingsValue=parseBaseServings(r);document.getElementById('cookTitle').textContent=r.name;document.getElementById('cookModeLabel').textContent=airFryer?'AIR FRYER MODE':'COOK MODE';renderCookIngredients(r);resetCookTimer();document.getElementById('cookModal').classList.add('open');renderCookStep();}
 function renderCookStep(){const r=recipes.find(x=>x.id===cookRecipeId);if(!r)return;const steps=(r.method||'').split('\n').filter(Boolean);cookStepIndex=Math.max(0,Math.min(cookStepIndex,Math.max(0,steps.length-1)));document.getElementById('cookStepLabel').textContent='Step '+(cookStepIndex+1)+' of '+steps.length;document.getElementById('cookStepText').textContent=steps[cookStepIndex]||'No method step recorded.';document.querySelector('#cookModal .cook-nav button:first-child').disabled=cookStepIndex===0;document.querySelector('#cookModal .cook-nav button:last-child').textContent=cookStepIndex===steps.length-1?'Finish':'Next →';}
 function cookPrev(){if(cookStepIndex>0){cookStepIndex--;renderCookStep();}}
 function cookNext(){const r=recipes.find(x=>x.id===cookRecipeId);if(!r)return;const steps=(r.method||'').split('\n').filter(Boolean);if(cookStepIndex<steps.length-1){cookStepIndex++;renderCookStep();}else{closeModal('cookModal');}}
