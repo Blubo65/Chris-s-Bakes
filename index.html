@@ -103,7 +103,7 @@ input:focus,select:focus,textarea:focus{border-color:#6fa697;box-shadow:0 0 0 3p
 <div class="modal shopping-modal" id="shoppingModal" onclick="if(event.target===this)closeModal('shoppingModal')"><div class="dialog"><div class="cook-header"><div><div class="cook-kicker">SHOPPING LIST</div><div class="cook-title">What you need</div></div><button class="close" onclick="closeModal('shoppingModal')">×</button></div><div class="shopping-actions"><strong id="shoppingCount">0 items</strong><div><button class="button secondary small" onclick="copyShoppingList()">Copy list</button><button class="button secondary small" onclick="clearShoppingList()">Clear</button></div></div><div class="shopping-list" id="shoppingList"></div></div></div><div class="modal" id="bakingDiaryModal" onclick="if(event.target===this)closeModal('bakingDiaryModal')"><div class="dialog bake-coach-dialog"><div class="dialog-head"><div><h2>My Baking Diary</h2><p class="notice" style="margin:5px 0 0">Record how your bake turned out. Entries are saved only in this browser on this device.</p></div><button class="close" type="button" onclick="closeModal('bakingDiaryModal')" aria-label="Close Baking Diary">×</button></div><h3 id="diaryRecipeTitle">Recipe</h3><form onsubmit="saveBakeDiaryEntry(event)"><div class="form-grid"><div class="field"><label for="diaryDate">Date baked</label><input type="date" id="diaryDate" required></div><div class="field"><label for="diaryResult">How did it turn out?</label><select id="diaryResult"><option value="Great">Great — make again</option><option value="Good">Good result</option><option value="Needs tweaking">Needs tweaking</option><option value="Unsuccessful">Unsuccessful</option></select></div><div class="field full"><label for="diaryTime">Actual baking time (optional)</label><input id="diaryTime" placeholder="e.g. 22 minutes at 150°C"></div><div class="field full"><label for="diaryNotes">What would you change next time?</label><textarea id="diaryNotes" placeholder="Texture, cooking time, ingredient changes, what worked well…"></textarea></div></div><div class="form-actions"><button type="button" class="button secondary" onclick="closeModal('bakingDiaryModal')">Cancel</button><button class="button primary" type="submit">Save diary entry</button></div></form><div id="bakingDiaryEntries" class="bake-coach-advice"></div></div></div><div class="modal" id="bakeCoachModal" onclick="if(event.target===this)closeModal('bakeCoachModal')"><div class="dialog bake-coach-dialog"><div class="dialog-head"><div><h2>Chris’s Bake Coach</h2><p class="notice" style="margin:5px 0 0">Practical checks for common baking problems. Advice is general, so always follow your recipe and check that food is fully cooked.</p></div><button class="close" type="button" onclick="closeModal('bakeCoachModal')" aria-label="Close Bake Coach">×</button></div><p id="bakeCoachRecipeContext" class="bake-coach-context" hidden></p><div class="form-grid"><div class="field full"><label for="bakeCoachProblem">What went wrong?</label><select id="bakeCoachProblem"><option value="brown">The top is browning too quickly</option><option value="raw">The middle is still undercooked</option><option value="sink">The cake sank in the middle</option><option value="dry">The cake turned out dry</option><option value="rise">It did not rise properly</option><option value="dense">The cake is dense or heavy</option><option value="spread">Biscuits spread too much</option></select></div><div class="field full"><label for="bakeCoachEquipment">What are you using?</label><select id="bakeCoachEquipment"><option value="airfryer">Air fryer</option><option value="oven">Conventional oven</option><option value="either">Not sure / other equipment</option></select></div></div><div class="detail-buttons"><button class="button primary" type="button" onclick="showBakeCoachAdvice()">Show suggestions</button></div><div id="bakeCoachAdvice" class="bake-coach-advice" aria-live="polite"><p>Choose the problem and equipment, then select <strong>Show suggestions</strong>.</p></div><p class="notice">These are troubleshooting suggestions, not a guarantee of the cause. For safety, do not eat cake or other foods that remain raw in the centre.</p></div></div><div class="modal cook-modal" id="cookModal" onclick="if(event.target===this)closeModal('cookModal')"><div class="dialog"><div class="cook-wake-row"><span class="cook-wake-label">Keep screen awake</span><button class="cook-wake-switch" type="button" id="cookWakeButton" onclick="toggleCookWakeLock()" role="switch" aria-checked="false" aria-label="Keep screen awake"><span class="cook-wake-knob"></span></button><span class="cook-wake-status" id="cookWakeStatus" role="status" aria-live="polite">Off — your screen may lock normally.</span></div><div class="cook-header"><div><div class="cook-kicker" id="cookModeLabel">COOK MODE</div><div class="cook-title" id="cookTitle">Recipe</div></div><button class="close" onclick="closeModal('cookModal')">×</button></div><div class="cook-temperature" id="cookTemperature" role="status"><span class="cook-temperature-icon">🌡️</span><span><strong>Cooking temperature</strong><span class="cook-temperature-value">Not specified in this recipe</span></span></div><div class="cook-step"><div class="cook-step-label" id="cookStepLabel">Step 1 of 1</div><div class="cook-step-text" id="cookStepText"></div></div><div class="cook-controls"><div class="cook-nav"><button class="button secondary" onclick="cookPrev()">← Previous</button><button class="button primary" onclick="cookNext()">Next →</button></div><div class="cook-timer"><button class="button secondary" onclick="toggleCookTimer()" id="timerButton">▶ Start timer</button><span class="timer-display" id="timerDisplay">00:00</span><button class="button secondary small" onclick="resetCookTimer()">Reset</button><button class="button secondary small" type="button" onclick="testCookAlarmSound()">♪ Test sound</button><button class="button primary small" id="timerAlarmStop" onclick="stopCookAlarm()" hidden>■ Stop alarm</button></div><p id="cookAlarmStatus" class="cook-wake-status" role="status" aria-live="polite">Use Test sound to check your device volume.</p></div><div class="cook-ingredients"><h3>Ingredients <span class="serving-adjust"><button onclick="changeCookServings(-1)">−</button><span class="serving-count" id="cookServings">4 servings</span><button onclick="changeCookServings(1)">+</button></span></h3><ul id="cookIngredients"></ul></div></div></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const KEY='myRecipeBook_v1',DELETED_KEY='myRecipeBook_deleted_v1',PUBLIC_BOOK_KEY='chris',PHOTO_BUCKET='recipe-photos';const SUPABASE_URL='https://vjqffpdggasgtgnxtktj.supabase.co',SUPABASE_KEY='sb_publishable_YyUFvcXzXzDjI3tZX8P7kg_SyNSWUJK';let cloudClient=null,cloudUser=null,cloudBusy=false;let recipes=[];let deletedIds=new Set();let active='All';let photoData='';let photoFile=null;let ratingRows=[];const VOTER_KEY='chrisRecipeVoter_v1';let voterId=localStorage.getItem(VOTER_KEY);if(!voterId){voterId=window.crypto?.randomUUID?crypto.randomUUID():'voter-'+Date.now()+'-'+Math.random().toString(36).slice(2);localStorage.setItem(VOTER_KEY,voterId)}const categories=['All','Air fryer','Cakes','Biscuits & cookies','Main meals','Side dishes','Desserts','Breads','Slimming','Vegetarian','Other'];
-const STARTER_RECIPES=[
+const STARTER_RECIPES = [
   {
     "id": "library-recipe-1",
     "name": "Carrot & Date Cake (2 x 5-inch tins)",
@@ -936,6 +936,120 @@ const STARTER_RECIPES=[
     "photo": "",
     "testedByChris": false,
     "created": 1799999000013
+  },
+  {
+    "id": "raindrop-slow-roasted-garlic-lamb",
+    "name": "Slow-Roasted Garlic Lamb",
+    "categories": [
+      "Main Meals",
+      "Oven"
+    ],
+    "category": "Main Meals",
+    "time": "4 hrs 40 mins",
+    "serves": 6,
+    "emoji": "🍖",
+    "description": "Tender slow-roasted leg of lamb with whole roasted garlic and a fragrant coriander and cumin paste.",
+    "ingredients": [
+      "1 leg of lamb, about 2 kg",
+      "8 whole garlic bulbs",
+      "2 tbsp olive oil, plus 1–2 tbsp for the garlic paste",
+      "Salt and freshly ground black pepper",
+      "1½ tsp ground coriander",
+      "1 tsp ground cumin"
+    ],
+    "method": [
+      "Heat the oven to 150°C (fan 140°C). Cut the tops off the garlic bulbs and arrange them in a roasting tin.",
+      "Pat the lamb dry. Rub with 2 tbsp olive oil and season generously with salt and pepper. Sit it on top of the garlic bulbs and cover the tin tightly with foil.",
+      "Roast for about 4 hours, until the lamb is very tender. Carefully remove the garlic bulbs and squeeze the softened cloves into a bowl.",
+      "Mash the roasted garlic with the ground coriander, cumin, 1–2 tbsp olive oil and a little salt and pepper.",
+      "Remove the foil, spread the garlic paste over the lamb and return it to the oven at 200°C (fan 180°C) for about 30 minutes to brown.",
+      "Rest for 10–15 minutes before shredding or carving. Check the lamb is cooked to your preference and serve with the roasting juices."
+    ],
+    "notes": "Adapted from the saved Raindrop recipe. Slow-roasting times vary with the shape of the joint and oven; use a suitable meat thermometer if available. Source: https://www.instagram.com/p/DWUbdlHAIs0/?igsh=Z3d5cG1lbWRzcjB4",
+    "photo": "",
+    "testedByChris": false,
+    "created": "2026-10-18"
+  },
+  {
+    "id": "raindrop-aloo-gobi",
+    "name": "Aloo Gobi (Potato and Cauliflower Curry)",
+    "categories": [
+      "Main Meals",
+      "Vegetarian",
+      "Indian"
+    ],
+    "category": "Main Meals",
+    "time": "40 mins",
+    "serves": 4,
+    "emoji": "🍛",
+    "description": "A comforting Indian-style dry curry of potatoes and cauliflower cooked with warming spices.",
+    "ingredients": [
+      "500 g potatoes, peeled and cut into bite-sized cubes",
+      "1 medium cauliflower, cut into florets",
+      "1 onion, finely chopped",
+      "2 tbsp vegetable oil",
+      "2 garlic cloves, crushed",
+      "1 tsp grated fresh ginger",
+      "1 tsp ground cumin",
+      "1 tsp ground coriander",
+      "½ tsp turmeric",
+      "½ tsp chilli powder, or to taste",
+      "200 g chopped tomatoes",
+      "100 ml water, plus a little extra if needed",
+      "Salt, to taste",
+      "Fresh coriander, to garnish (optional)"
+    ],
+    "method": [
+      "Parboil the potato cubes in boiling water for 7–8 minutes, then drain well.",
+      "Heat the oil in a large lidded pan. Cook the onion for 5–7 minutes until softened.",
+      "Add the garlic, ginger, cumin, ground coriander, turmeric and chilli powder. Stir for 30–60 seconds until fragrant.",
+      "Add the potatoes and cauliflower and stir to coat in the spices. Mix in the chopped tomatoes, water and salt.",
+      "Cover and simmer gently for 18–25 minutes, stirring occasionally, until the vegetables are tender. Add a splash of water if the pan becomes too dry; remove the lid for the final few minutes if you prefer it less saucy.",
+      "Taste and adjust the seasoning. Scatter with fresh coriander if using and serve as a side dish or with rice or flatbreads."
+    ],
+    "notes": "A practical home-cooked adaptation based on the saved Aloo Gobi link; quantities and method are not a verbatim reproduction of the source. Source: https://www.slimmingeats.com/blog/aloo-gobi-potatoes-cauliflower#mv-creation-379-jtr",
+    "photo": "",
+    "testedByChris": false,
+    "created": "2026-10-18"
+  },
+  {
+    "id": "raindrop-korean-ground-pork",
+    "name": "Korean-Style Ground Pork",
+    "categories": [
+      "Main Meals",
+      "Quick Meals",
+      "Asian-Inspired"
+    ],
+    "category": "Main Meals",
+    "time": "25 mins",
+    "serves": 4,
+    "emoji": "🥢",
+    "description": "Quick savoury-sweet minced pork with garlic, ginger and a soy-based Korean-inspired sauce, served over rice.",
+    "ingredients": [
+      "500 g lean pork mince",
+      "1 tsp vegetable oil, if needed",
+      "3 garlic cloves, finely chopped",
+      "1 tsp grated fresh ginger",
+      "4 tbsp reduced-salt soy sauce",
+      "1½ tbsp brown sugar or honey",
+      "1 tbsp rice vinegar",
+      "1 tsp sesame oil",
+      "½ tsp chilli flakes, or to taste",
+      "4 spring onions, sliced",
+      "1 tsp sesame seeds (optional)",
+      "Cooked rice, to serve"
+    ],
+    "method": [
+      "Mix the soy sauce, brown sugar or honey, rice vinegar, sesame oil and chilli flakes in a small bowl.",
+      "Heat a large frying pan over medium-high heat. Add the pork mince and cook for 6–8 minutes, breaking it up with a spoon, until browned and cooked through. Drain excess fat if necessary.",
+      "Add the garlic and ginger and stir-fry for 30 seconds until fragrant.",
+      "Pour in the sauce and simmer for 2–4 minutes, stirring, until the pork is glossy and the sauce has reduced slightly.",
+      "Stir through most of the spring onions. Sprinkle with the remaining spring onions and sesame seeds, if using. Serve hot over cooked rice."
+    ],
+    "notes": "Home-cooked adaptation inspired by the saved Korean Ground Pork recipe link; not a verbatim reproduction. Source: https://www.slimmingeats.com/blog/korean-ground-pork#mv-creation-610-jtr",
+    "photo": "",
+    "testedByChris": false,
+    "created": "2026-10-18"
   }
 ];
 const STARTER_SYNC_IDS=['ginger-nuts-air-fryer','lemon-bars-air-fryer','lemon-walnut-drizzle-cake','sugar-free-apple-cocoa-cake','keema-cottage-pie','mushroom-bhaji','cajun-style-dirty-rice','tuna-pasta-salad','cherry-cheesecake-in-a-jar','super-speedy-spag-bol','cheesy-homity-pie','chicken-carbonara','blueberry-white-chocolate-flapjack-bites','full-indian-breakfast-bake','baked-pear-berry-breakfast-souffle','egg-chip-pepper-bake','egg-chip-tray-bake','chinese-chicken-curry','szechuan-pork-with-noodles','air-fryer-mincemeat-loaf-cake'];const PERMANENTLY_REMOVED_RECIPE_NAMES=new Set(['carrot & date cake (without walnuts)','egg and chip tray bake']);const RECIPE_SCHEMA_VERSION=2;
