@@ -5554,6 +5554,8 @@ function newRecipeId(){return window.crypto?.randomUUID?crypto.randomUUID():'rec
 function normaliseRecipe(raw,index=0){
  if(!raw||typeof raw!=='object')return null;
  const r={...raw};r.id=String(r.id||newRecipeId());
+ // Repair known ingredient line-break formatting whenever recipes load from Supabase or browser storage.
+ r.ingredients=String(r.ingredients||'').replace(/,\s*\r?\n\s*(optional|crushed|finely chopped|chopped|sliced|peeled|deseeded and thinly sliced)\b/gi,', $1');
  r.name=String(r.name||'').replace(/\bair\s+fryer\b/ig,'').replace(/\(\s*\)/g,'').replace(/\s{2,}/g,' ').replace(/\s+([,.:;])/g,'$1').trim();
  const rawCats=(Array.isArray(r.categories)?r.categories:[r.category||'Other']).map(x=>String(x).trim()).filter(Boolean);
  const sourceText=[r.name,r.description,r.ingredients,r.method,r.notes,rawCats.join(' ')].join(' ').toLowerCase();
