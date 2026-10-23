@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" role="img" aria-labelledby="title desc">
+<title id="title">The Chidsey Chowdown</title><desc id="desc">Homemade recipes, cakes and air fryer favourites in a warm cream and sage-green kitchen style.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf5"/><stop offset=".55" stop-color="#f7f0df"/><stop offset="1" stop-color="#e8dfc9"/></linearGradient>
+ <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ead8b9" stop-opacity=".3"/><stop offset="1" stop-color="#c5a77c" stop-opacity=".48"/></linearGradient>
+ <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#4a3d2b" flood-opacity=".14"/></filter>
+</defs>
+<rect width="1600" height="640" fill="url(#bg)"/><rect y="500" width="1600" height="140" fill="url(#wood)"/>
+<g opacity=".28" stroke="#b8a17d" fill="none"><path d="M0 528H1600M0 565H1600M0 604H1600"/><path d="M130 500l-20 140M530 500l-12 140M1050 500l-10 140M1430 500l-25 140"/></g>
+<!-- herb sprigs -->
+<g fill="#4d7044" stroke="#34553a" stroke-width="2"><path d="M300 390Q210 260 150 100" fill="none" stroke-width="5"/><ellipse cx="185" cy="170" rx="18" ry="42" transform="rotate(-38 185 170)"/><ellipse cx="226" cy="220" rx="17" ry="39" transform="rotate(40 226 220)"/><ellipse cx="150" cy="235" rx="17" ry="38" transform="rotate(-43 150 235)"/><ellipse cx="260" cy="290" rx="18" ry="39" transform="rotate(45 260 290)"/><ellipse cx="202" cy="300" rx="18" ry="39" transform="rotate(-43 202 300)"/>
+<path d="M1300 390Q1385 265 1450 100" fill="none" stroke-width="5"/><ellipse cx="1418" cy="168" rx="18" ry="42" transform="rotate(38 1418 168)"/><ellipse cx="1378" cy="220" rx="17" ry="39" transform="rotate(-40 1378 220)"/><ellipse cx="1450" cy="238" rx="17" ry="38" transform="rotate(43 1450 238)"/><ellipse cx="1340" cy="290" rx="18" ry="39" transform="rotate(-45 1340 290)"/><ellipse cx="1400" cy="305" rx="18" ry="39" transform="rotate(43 1400 305)"/></g>
+<!-- scones on plate -->
+<g filter="url(#shadow)"><ellipse cx="170" cy="475" rx="150" ry="35" fill="#fffdf5" stroke="#b8b29f" stroke-width="4"/><g fill="#d9a45f" stroke="#a66e36" stroke-width="3"><path d="M44 450q-12-38 28-53q37-14 59 15q18 32-4 54q-45 20-83-16z"/><path d="M125 455q-8-38 29-53q36-13 59 16q18 32-5 54q-44 19-83-17z"/><path d="M75 418q-6-31 28-44q34-10 50 16q15 28-5 46q-39 17-73-18z"/></g><g stroke="#f8e4b8" stroke-width="4" stroke-linecap="round"><path d="M57 423l48 9M136 430l48 8M93 395l30 9"/></g></g>
+<!-- cake and cookies -->
+<g filter="url(#shadow)"><path d="M1368 365h174v116q-87 25-174 0z" fill="#c98b45" stroke="#996332" stroke-width="4"/><path d="M1368 366q86-38 174 0l-10 25q-77-25-154 0z" fill="#fff8e7"/><path d="M1390 365l8 18 9-18 10 18 10-18 10 18 10-18 10 18 10-18 10 18 10-18 10 18 10-18" fill="none" stroke="#fffdf6" stroke-width="7" stroke-linecap="round"/><g fill="#5d432e"><circle cx="1425" cy="415" r="5"/><circle cx="1465" cy="440" r="5"/><circle cx="1500" cy="411" r="5"/></g><g fill="#b7793d" stroke="#8d582d" stroke-width="3"><circle cx="1440" cy="520" r="34"/><circle cx="1510" cy="526" r="31"/><circle cx="1383" cy="534" r="28"/></g><g fill="#5a3825"><circle cx="1425" cy="509" r="4"/><circle cx="1453" cy="530" r="4"/><circle cx="1500" cy="517" r="4"/><circle cx="1520" cy="538" r="4"/><circle cx="1377" cy="528" r="4"/></g></g>
+<!-- title -->
+<g text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"><text x="800" y="126" font-size="45" letter-spacing="7" fill="#3b382b">— THE —</text><text x="800" y="260" font-size="122" font-weight="bold" letter-spacing="2" fill="#315c38">CHIDSEY</text><text x="800" y="365" font-size="105" font-weight="bold" letter-spacing="1" fill="#332b20">CHOWDOWN</text></g>
+<g stroke="#527248" stroke-width="3" fill="none" stroke-linecap="round"><path d="M430 296q-35-26-54-65m54 65q-42-3-67-30m67 30q-8-43-2-66"/><path d="M1170 296q35-26 54-65m-54 65q42-3 67-30m-67 30q8-43 2-66"/></g>
+<text x="800" y="421" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="1.3" fill="#355a39">HOMEMADE RECIPES, CAKES &amp; AIR FRYER FAVOURITES</text>
+<!-- icons -->
+<g stroke="#42633f" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round">
+<path d="M525 485h54v34h-54zM519 485l33-20 33 20M525 500h54"/>
+<path d="M657 480q-4 35 30 35t30-35M653 480h68M669 463q-8-12 0-22m18 22q-8-12 0-22m18 22q-8-12 0-22"/>
+<path d="M790 500q27-28 54 0l-27 20zM798 481l-13-15m48 15 13-15M817 476l8-18"/>
+<path d="M929 486h51l-5 36h-41zM926 486l29-22 29 22M940 496h29M940 507h29"/>
+<rect x="1064" y="466" width="48" height="56" rx="8"/><path d="M1075 478h26M1075 489h26M1083 508h10"/>
+<path d="M1191 489q0-19 22-19t22 19q0 21-22 21t-22-21zM1202 485h2m18 0h2m-12 12h2" />
+</g>
+<path d="M410 494h68M1125 494h68" stroke="#527248" stroke-width="3"/>
+</svg>
