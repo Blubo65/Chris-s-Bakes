@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 260" role="img" aria-labelledby="title desc">
+<title id="title">The Chidsey Chowdown</title><desc id="desc">Rustic wooden food banner with savoury dishes on the left and sweet treats on the right.</desc>
+<defs>
+ <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#f5ead6"/><stop offset=".48" stop-color="#e8d5b7"/><stop offset="1" stop-color="#f8efdf"/></linearGradient>
+ <linearGradient id="shade" x2="1"><stop stop-color="#203d2b" stop-opacity=".22"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/><stop offset=".75" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#203d2b" stop-opacity=".22"/></linearGradient>
+ <pattern id="grain" width="320" height="68" patternUnits="userSpaceOnUse"><path d="M0 13 Q80 7 160 14 T320 12 M0 42 Q100 35 200 43 T320 40" fill="none" stroke="#a58c6a" stroke-opacity=".22" stroke-width="2"/><path d="M24 25 l52 -2 M220 56 l66 -3" stroke="#fff" stroke-opacity=".34" stroke-width="2"/></pattern>
+ <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#263629" flood-opacity=".2"/></filter>
+</defs>
+<rect width="1600" height="260" fill="url(#wood)"/><rect width="1600" height="260" fill="url(#grain)"/>
+<path d="M0 86 Q240 76 420 88 T800 84 T1200 87 T1600 80 M0 180 Q300 171 560 182 T1080 176 T1600 184" stroke="#b79c77" stroke-opacity=".38" fill="none" stroke-width="2"/>
+<!-- savoury spread left -->
+<g filter="url(#shadow)">
+ <ellipse cx="115" cy="185" rx="155" ry="105" fill="#fff7e8" stroke="#b99b70" stroke-width="8"/>
+ <ellipse cx="115" cy="185" rx="136" ry="87" fill="#c58b45"/>
+ <ellipse cx="115" cy="181" rx="124" ry="76" fill="#e9c68b"/>
+ <path d="M5 176 Q35 119 77 158 T143 149 T223 171 M-3 205 Q45 170 81 211 T166 200 T234 204" fill="none" stroke="#a9442e" stroke-width="12" stroke-linecap="round"/>
+ <g fill="#4d743a"><ellipse cx="47" cy="169" rx="13" ry="7" transform="rotate(-35 47 169)"/><ellipse cx="114" cy="201" rx="13" ry="7" transform="rotate(35 114 201)"/><ellipse cx="183" cy="168" rx="13" ry="7" transform="rotate(-25 183 168)"/><ellipse cx="80" cy="225" rx="12" ry="7"/></g>
+ <g fill="#b93b2c" stroke="#f5a58a" stroke-width="2"><circle cx="70" cy="155" r="13"/><circle cx="155" cy="187" r="12"/><circle cx="110" cy="223" r="11"/></g>
+ <!-- tomatoes and garlic -->
+ <g><circle cx="45" cy="52" r="31" fill="#c83c2c"/><circle cx="91" cy="43" r="26" fill="#df4c32"/><path d="M45 21 l-8 -12 14 8 9 -8 -1 14 M90 17 l-5 -10 13 8 8 -5 -3 13" fill="#47733c" stroke="#47733c" stroke-width="5"/><path d="M143 37 q-15 -20 2 -29 q13 7 13 18 q13 -8 20 3 q4 18 -16 28 q-17 -4 -19 -20" fill="#f4e8c9" stroke="#c9b88e" stroke-width="2"/></g>
+ <g fill="#3d6e39"><ellipse cx="210" cy="61" rx="42" ry="14" transform="rotate(-35 210 61)"/><ellipse cx="226" cy="86" rx="35" ry="13" transform="rotate(32 226 86)"/><ellipse cx="38" cy="114" rx="37" ry="12" transform="rotate(-25 38 114)"/></g>
+</g>
+<!-- sweets right -->
+<g filter="url(#shadow)">
+ <ellipse cx="1490" cy="190" rx="145" ry="88" fill="#fff8e8" stroke="#b99b70" stroke-width="7"/>
+ <path d="M1364 186 Q1390 136 1432 164 Q1470 122 1504 160 Q1550 133 1615 176 L1615 218 Q1550 248 1488 220 Q1424 247 1360 219Z" fill="#c98b4b" stroke="#a66a36" stroke-width="5"/>
+ <path d="M1372 184 Q1404 153 1435 177 T1496 176 T1558 177 T1610 177" fill="none" stroke="#fff1d5" stroke-width="13" stroke-linecap="round"/>
+ <g fill="#5b3020"><circle cx="1407" cy="197" r="6"/><circle cx="1453" cy="207" r="6"/><circle cx="1501" cy="190" r="7"/><circle cx="1552" cy="208" r="6"/><circle cx="1590" cy="191" r="6"/></g>
+ <!-- cupcake -->
+ <path d="M1408 108 L1475 108 L1464 151 Q1442 165 1418 150Z" fill="#c97843" stroke="#94532f" stroke-width="3"/>
+ <path d="M1404 109 Q1393 89 1417 85 Q1416 59 1443 68 Q1463 48 1476 72 Q1501 72 1490 97 Q1495 111 1475 113 L1408 113Z" fill="#fff0da" stroke="#d3b18a" stroke-width="3"/>
+ <path d="M1420 91 q17 -15 29 0 t25 -1" fill="none" stroke="#a94e37" stroke-width="5"/>
+ <!-- berries -->
+ <g fill="#bd2d43"><circle cx="1537" cy="67" r="15"/><circle cx="1570" cy="82" r="13"/><circle cx="1548" cy="98" r="12"/></g><g fill="#49793d"><path d="M1533 53 l-2 -15 13 10 9 -11 1 17Z"/><path d="M1567 69 l-2 -13 12 9 9 -7 0 13Z"/></g>
+ <g fill="#3d6e39"><ellipse cx="1335" cy="58" rx="39" ry="12" transform="rotate(25 1335 58)"/><ellipse cx="1309" cy="79" rx="32" ry="10" transform="rotate(-35 1309 79)"/></g>
+</g>
+<!-- central title plaque -->
+<rect x="330" y="42" width="940" height="176" rx="18" fill="#fffaf0" fill-opacity=".83" stroke="#b9a17c" stroke-opacity=".75" stroke-width="2"/>
+<g fill="#214f3e" stroke="#214f3e" stroke-linejoin="round">
+ <path d="M435 94 Q416 84 425 65 Q435 48 454 57 Q467 35 486 53 Q507 49 512 69 Q527 87 507 98 L507 119 Q471 132 435 119Z" fill="#f9f3e5" stroke-width="5"/>
+ <path d="M435 119 Q471 127 507 119 L504 137 Q470 145 438 137Z" fill="#f9f3e5" stroke-width="5"/>
+ <path d="M445 109 v14 M461 111 v13 M478 111 v13 M494 109 v14" fill="none" stroke-width="3"/>
+</g>
+<text x="860" y="106" text-anchor="middle" fill="#174a39" font-family="Georgia, 'Times New Roman', serif" font-weight="bold" font-size="54">The Chidsey Chowdown</text>
+<path d="M490 151 H596 M1122 151 H1225" stroke="#2d674f" stroke-width="3"/>
+<path d="M596 151 l-11 -6 v12Z M1122 151 l11 -6 v12Z" fill="#2d674f"/>
+<text x="860" y="160" text-anchor="middle" fill="#315d49" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" letter-spacing="3">HOMEMADE RECIPES  •  CAKES  •  AIR FRYER FAVOURITES</text>
+<path d="M560 183 H1160" stroke="#b49a73" stroke-width="1.5" stroke-opacity=".7"/>
+</svg>
