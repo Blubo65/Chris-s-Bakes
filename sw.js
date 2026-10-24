@@ -1,5 +1,5 @@
-const CACHE_NAME='chris-recipe-book-v41';
-const APP_SHELL=['./','./index.html','./chef-icon-192.png','./chef-icon-512.png','./chidsey-chowdown-cover.svg?v=41','./manifest.json'];
+const CACHE_NAME='chris-recipe-book-v42';
+const APP_SHELL=['./','./index.html','./chef-icon-192.png','./chef-icon-512.png','./manifest.json'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE_NAME);
