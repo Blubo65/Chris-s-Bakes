@@ -1,4 +1,4 @@
-const CACHE_NAME='chris-recipe-book-v43';
+const CACHE_NAME='chris-recipe-book-v44';
 const APP_SHELL=['./','./index.html','./chef-icon-192.png','./chef-icon-512.png','./manifest.json'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
