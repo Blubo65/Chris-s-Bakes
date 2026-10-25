@@ -1,0 +1,36 @@
+name: Publish new recipe SEO pages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recipe-seo-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+      - name: Generate pages for newly added recipes
+        env:
+          SUPABASE_URL: https://vjqffpdggasgtgnxtktj.supabase.co
+          SUPABASE_KEY: sb_publishable_YyUFvcXzXzDjI3tZX8P7kg_SyNSWUJK
+        run: python3 scripts/generate_new_recipe_pages.py
+      - name: Commit new SEO pages and sitemap
+        run: |
+          if git diff --quiet; then
+            echo "No new recipe SEO pages to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add recipes sitemap.xml
+          git commit -m "Publish SEO pages for new recipes"
+          git push
