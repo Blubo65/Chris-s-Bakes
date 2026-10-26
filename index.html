@@ -5720,12 +5720,35 @@ function deleteBakeDiaryEntry(entryId){if(!diaryRecipeId||!confirm('Delete this 
 function closeModal(id){document.getElementById(id).classList.remove('open');if(id==='editModal')recipeEditorOpen=false;if(id==='cookModal')disableCookWakeLock();if(id==='viewModal')resetHomeSeo()}
 
 let bakeCoachRecipeId=null;
+function filterBakeCoachProblems(r){
+  const select=document.getElementById('bakeCoachProblem');
+  if(!select)return;
+  const text=r?[r.name,r.description,Array.isArray(r.categories)?r.categories.join(' '):(r.category||''),Array.isArray(r.methods)?r.methods.join(' '):(r.method||'')].join(' ').toLowerCase():'';
+  const isCake=/cake|loaf|traybake|brownie|muffin|cupcake|sponge|bakewell|flapjack/.test(text);
+  const isBiscuit=/biscuit|cookie|shortbread|gingerbread/.test(text);
+  const isScone=/scone/.test(text);
+  const isBread=/bread|bara brith|tea loaf|yeast|dough|rolls?\b/.test(text);
+  const isBaked=isCake||isBiscuit||isScone||isBread||/baking|oven|air fryer/.test(text);
+  const specific={
+    sink:isCake, dry:isCake, soggy:isCake, tough:isCake, crack:isCake, stick:isCake,
+    spread:isBiscuit, hardbiscuit:isBiscuit, scone:isScone, bread:isBread
+  };
+  Array.from(select.options).forEach(option=>{
+    option.hidden=Object.prototype.hasOwnProperty.call(specific,option.value)?!specific[option.value]:false;
+  });
+  if(select.selectedOptions[0]?.hidden){
+    const first=Array.from(select.options).find(o=>!o.hidden);
+    if(first)select.value=first.value;
+  }
+  if(!r)Array.from(select.options).forEach(option=>option.hidden=false);
+}
 function openBakeCoach(recipeId){
   bakeCoachRecipeId=recipeId||null;
   const r=recipeId?recipes.find(x=>x.id===recipeId):null;
   const context=document.getElementById('bakeCoachRecipeContext');
   context.hidden=!r;
-  context.textContent=r?'Getting help with: “'+r.name+'”. These are general troubleshooting tips, not recipe-specific testing.':'';
+  context.textContent=r?'Getting help with: “'+r.name+'”. Choose from problems relevant to this recipe, where possible. Advice is general, not recipe-specific testing.':'';
+  filterBakeCoachProblems(r);
   if(r&&isAirFryerRecipe(r))document.getElementById('bakeCoachEquipment').value='airfryer';
   document.getElementById('bakeCoachAdvice').innerHTML='<p>Choose the problem and equipment, then select <strong>Show suggestions</strong>.</p>';
   document.getElementById('bakeCoachModal').classList.add('open');
