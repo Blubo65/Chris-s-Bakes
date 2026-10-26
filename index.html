@@ -5723,24 +5723,27 @@ let bakeCoachRecipeId=null;
 function filterBakeCoachProblems(r){
   const select=document.getElementById('bakeCoachProblem');
   if(!select)return;
-  const text=r?[r.name,r.description,Array.isArray(r.categories)?r.categories.join(' '):(r.category||''),Array.isArray(r.methods)?r.methods.join(' '):(r.method||'')].join(' ').toLowerCase():'';
-  const isCake=/cake|loaf|traybake|brownie|muffin|cupcake|sponge|bakewell|flapjack/.test(text);
-  const isBiscuit=/biscuit|cookie|shortbread|gingerbread/.test(text);
+  const categories=Array.isArray(r?.categories)?r.categories.join(' '):(r?.category||'');
+  const text=r?[r.name,r.description,categories,r.ingredients,r.method,r.notes,r.equipmentUsed].join(' ').toLowerCase():'';
+  const isCake=/cake|loaf cake|traybake|brownie|muffin|cupcake|sponge|bakewell|carrot.?and.?date|tea loaf/.test(text);
+  const isBiscuit=/biscuit|cookie|shortbread|ginger nut|gingerbread/.test(text);
   const isScone=/scone/.test(text);
-  const isBread=/bread|bara brith|tea loaf|yeast|dough|rolls?\b/.test(text);
-  const isBaked=isCake||isBiscuit||isScone||isBread||/baking|oven|air fryer/.test(text);
+  const isBread=/bread|bara brith|yeast|dough|bread roll|dinner roll/.test(text);
+  const isAirFood=/chicken|turkey|pork|gammon|fish|salmon|sausage|potato|chips|vegetable|rissole|roast|air fryer|airfryer/.test(text);
+  const knownType=isCake||isBiscuit||isScone||isBread;
   const specific={
     sink:isCake, dry:isCake, soggy:isCake, tough:isCake, crack:isCake, stick:isCake,
-    spread:isBiscuit, hardbiscuit:isBiscuit, scone:isScone, bread:isBread
+    spread:isBiscuit, hardbiscuit:isBiscuit, scone:isScone, bread:isBread,
+    uneven:isAirFood, crispyraw:isAirFood
   };
   Array.from(select.options).forEach(option=>{
-    option.hidden=Object.prototype.hasOwnProperty.call(specific,option.value)?!specific[option.value]:false;
+    // Keep all options available for unrecognised recipes; narrow the list only when we can identify the bake reliably.
+    option.hidden=knownType&&Object.prototype.hasOwnProperty.call(specific,option.value)?!specific[option.value]:false;
   });
   if(select.selectedOptions[0]?.hidden){
     const first=Array.from(select.options).find(o=>!o.hidden);
     if(first)select.value=first.value;
   }
-  if(!r)Array.from(select.options).forEach(option=>option.hidden=false);
 }
 function openBakeCoach(recipeId){
   bakeCoachRecipeId=recipeId||null;
