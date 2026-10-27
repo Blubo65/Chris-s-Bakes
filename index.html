@@ -5671,21 +5671,23 @@ function normaliseRecipe(raw,index=0){
  rawCats.forEach(c=>{const k=c.toLowerCase();if(/air\s*fryer|airfryer/.test(k))methods.add('Air Fryer');if(/\boven\b/.test(k))methods.add('Oven');if(/slow cooker|crockpot/.test(k))methods.add('Slow Cooker');if(/\bhob\b/.test(k))methods.add('Hob');if(/\b(bbq|barbecue|grilling)\b/.test(k))methods.add('BBQ');if(/slimming|low.?calorie|lower calorie/.test(k))dietary.add('Lower Calorie');if(/sugar.?free/.test(k))dietary.add('Sugar-Free');if(/\bvegetarian\b/.test(k))dietary.add('Vegetarian');if(/\bvegan\b/.test(k))dietary.add('Vegan')});
  if(/air\s*fry|airfryer/.test(sourceText))methods.add('Air Fryer');if(/\bslow cooker\b|crock.?pot/.test(sourceText))methods.add('Slow Cooker');if(/\bbarbecue\b|\bbbq\b|grill(?:ed|ing)?/.test(sourceText))methods.add('BBQ');if(/\boven\b|bake(?:d|s|ing)?\b/.test(String(r.method||'').toLowerCase()))methods.add('Oven');
  if(/\b(low.?calorie|lower calorie|slimming|lighter version)\b/.test(sourceText))dietary.add('Lower Calorie');if(/\bsugar.?free\b/.test(sourceText))dietary.add('Sugar-Free');if(/\bvegan\b/.test(sourceText))dietary.add('Vegan');
- const food=[];const add=c=>{if(c&&!food.includes(c)&&food.length<3)food.push(c)};const old=rawCats.map(c=>c.toLowerCase());const has=(...terms)=>terms.some(t=>old.includes(t)||sourceText.includes(t));
- if(has('cakes','cakes & traybakes')||/\b(cake|traybake|loaf cake|tea bread|bara brith)\b/.test(sourceText))add('Cakes & Traybakes');
- if(has('biscuits & cookies','biscuits','cookies')||/\b(biscuit|biscuits|cookie|cookies|shortbread|ginger nuts)\b/.test(sourceText))add('Biscuits & Cookies');
- if(has('desserts','desserts & puddings','puddings')||/\b(dessert|pudding|crumble|cheesecake|trifle|stewed apples|apple rings)\b/.test(sourceText))add('Desserts & Puddings');
-  if(has('pies & pastries','pies','pastries')||/\b(pie|pies|pasties|pasty|pastry|pastries|sausage roll|sausage rolls|puff pastry|shortcrust|vol.?au.?vent)\b/.test(sourceText))add('Pies & Pastries');
-  if(has('breads','bread','Bread','savoury')||/\b(bread|scone|scones|quiche|flatbread|savoury loaf)\b/.test(sourceText))add('Bread');
- if(has('pasta','pasta & rice','rice','noodles')||/\b(pasta|spaghetti|macaroni|noodles?|risotto|fried rice|dirty rice)\b/.test(sourceText))add('Pasta & Rice');
- if(has('curry','curries','curries & asian','asian-inspired','chinese','indian')||/\b(curry|curries|jalfrezi|bhuna|rogan josh|tikka masala|chow mein|dopiaza|stir.?fry|kung pao|sweet and sour|singapore noodles)\b/.test(sourceText))add('Curries & Asian');
- if(has('bbq','barbecue','bbq & grilling')||/\b(bbq|barbecue|grilled|grilling|kebab|kebabs|skewers)\b/.test(sourceText))add('BBQ & Grilling');
- if(has('soups & dips','soups','dips','sauces')||/\b(soup|soups|dip|dips|sauce|sauces|gravy)\b/.test(sourceText))add('Soups & Dips');
- if(has('sides & snacks','side dishes','sides','snacks')||/\b(side dish|side dishes|side|sides|snack|snacks|cauliflower mash|chips|fries)\b/.test(sourceText))add('Sides & Snacks');
- if(has('vegetarian')||dietary.has('Vegetarian'))add('Vegetarian');
+ // Assign food categories from the recipe title and description, not incidental ingredients or cooking instructions.
+ const food=[];const add=c=>{if(c&&!food.includes(c)&&food.length<2)food.push(c)};
+ const titleText=[r.name,r.description].join(' ').toLowerCase();
+ const titleHas=re=>re.test(titleText);
+ if(titleHas(/\b(cake|traybake|loaf cake|tea bread|bara brith)\b/))add('Cakes & Traybakes');
+ else if(titleHas(/\b(biscuit|biscuits|cookie|cookies|shortbread|ginger nuts|oat cookies)\b/))add('Biscuits & Cookies');
+ else if(titleHas(/\b(dessert|pudding|crumble|cheesecake|trifle|fritter|fruit salad)\b/))add('Desserts & Puddings');
+ else if(titleHas(/\b(pie|pies|pasties|pasty|pastry|pastries|sausage rolls?|vol.?au.?vent|quiche)\b/))add('Pies & Pastries');
+ else if(titleHas(/\b(bread|scones?|onion bhajis?|naan|flatbread|tea loaf|welsh tea bread)\b/))add('Bread');
+ else if(titleHas(/\b(pasta|spaghetti|macaroni|noodles?|risotto|fried rice|rice lasagna|lasagne|lasagna)\b/))add('Pasta & Rice');
+ else if(titleHas(/\b(curry|curries|jalfrezi|bhuna|rogan josh|tikka masala|chow mein|dopiaza|stir.?fry|kung pao|sweet and sour|keema)\b/))add('Curries & Asian');
+ else if(titleHas(/\b(bbq|barbecue|grilled kebabs?|grilling|skewers)\b/))add('BBQ & Grilling');
+ else if(titleHas(/\b(soup|soups|dip|dips|hummus|gravy)\b/))add('Soups & Dips');
+ else if(titleHas(/\b(side dish|snack|snacks|chips|fries|bhajis?)\b/))add('Sides & Snacks');
+ if(titleHas(/\b(vegetarian|veggie|meat.?free)\b/)&&!food.includes('Vegetarian'))add('Vegetarian');
  if(!food.length)add('Main Meals');
- if(food.length<3&&(has('main meals','main meal','chicken','beef','pork','turkey','meat','fish')||/\b(chicken|beef|pork|turkey|gammon|fish|meatloaf|burger|burgers|casserole|pie|stew)\b/.test(sourceText)))add('Main Meals');
- r.categories=food.slice(0,3);r.category=r.categories[0]||'Main Meals';r.methods=[...methods].filter(x=>['Air Fryer','Oven','Slow Cooker','Hob','BBQ'].includes(x));r.dietaryTags=[...dietary].filter(x=>['Lower Calorie','Sugar-Free','Vegetarian','Vegan'].includes(x));
+ r.categories=food.slice(0,2);r.category=r.categories[0]||'Main Meals';r.methods=[...methods].filter(x=>['Air Fryer','Oven','Slow Cooker','Hob','BBQ'].includes(x));r.dietaryTags=[...dietary].filter(x=>['Lower Calorie','Sugar-Free','Vegetarian','Vegan'].includes(x));
  r.time=String(r.time||'').trim();r.serves=String(r.serves||'').trim();r.emoji=String(r.emoji||'🍽️');r.description=String(r.description||'').trim();r.ingredients=String(r.ingredients||'').trim().replace(/,\s*\r?\n\s*(?!(?:\d|[¼½¾⅓⅔⅛⅜⅝⅞]))/g,', ');r.method=String(r.method||'').trim().replace(/,\s*\r?\n\s*/g,', ');r.notes=String(r.notes||'').trim();r.photo=typeof r.photo==='string'?r.photo:'';r.equipmentUsed=String(r.equipmentUsed||'').trim();r.tinSize=String(r.tinSize||'').trim();r.testedByChris=raw.testedByChris===true;r.lastTested=String(raw.lastTested||'').trim();
  const createdNumber=typeof r.created==='number'?r.created:Number(r.created);const createdParsed=Number.isFinite(createdNumber)&&createdNumber>0?createdNumber:(typeof r.created==='string'&&r.created.trim()?Date.parse(r.created):NaN);r.created=Number.isFinite(createdParsed)&&createdParsed>0&&createdParsed<=Date.now()+86400000?createdParsed:Date.UTC(2000,0,1)+index*1000;return r;
 }
