@@ -5693,7 +5693,6 @@ function normaliseRecipe(raw,index=0){
  else if(titleHas(/\b(side dish|snack|snacks|chips|fries|bhajis?)\b/))add('Sides & Snacks');
  else add('Main Meals');
  // Useful extra tags are independent of the primary food category.
- if(/\b(beef|steak|minced beef|stewing beef)\b/.test(titleText+' '+ingredientText))add('Beef');
  if(/\b(one.?pot|one.?pan)\b/.test(titleText))add('One Pot');
  if(!isSweetBake && !isPastaRice && !/\b(chicken|beef|pork|lamb|fish|prawn|sausage|bacon|ham|mince|turkey)\b/.test(ingredientText) && /\b(potato|cauliflower|chickpea|lentil|paneer|tofu|vegetable|spinach|aubergine|eggplant)\b/.test(ingredientText))add('Vegetarian');
  if(titleHas(/\b(vegetarian|veggie|meat.?free)\b/)&&!food.includes('Vegetarian'))add('Vegetarian');
