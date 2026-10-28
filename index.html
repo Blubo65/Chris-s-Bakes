@@ -5945,7 +5945,7 @@ function render(){
     if(filters)filters.innerHTML='';
     if(grid){
       if(filtered.length){
-        grid.innerHTML=filtered.map(r=>'<button type="button" class="recipe" style="text-align:left;cursor:pointer" onclick="viewRecipe(\\''+esc(r.id)+'\\')"><div class="recipe-info"><h3>'+esc(r.name)+'</h3><p>'+esc(r.description||'From Chris’s recipe book')+'</p><div class="meta"><span>◷ '+esc(r.time||'Time varies')+'</span><span>'+esc(r.serves||'')+'</span></div></div></button>').join('');
+        grid.innerHTML=filtered.map(r=>`<button type="button" class="recipe" style="text-align:left;cursor:pointer" onclick="viewRecipe('${esc(r.id)}')"><div class="recipe-info"><h3>${esc(r.name)}</h3><p>${esc(r.description||'From Chris’s recipe book')}</p><div class="meta"><span>◷ ${esc(r.time||'Time varies')}</span><span>${esc(r.serves||'')}</span></div></div></button>`).join('');
       }else{
         grid.innerHTML='<div class="empty"><div class="emoji">🔎</div><h3>No recipes found</h3><p>Try another recipe name or ingredient.</p></div>';
       }
@@ -5953,7 +5953,6 @@ function render(){
     setSyncStatus('Recipe display recovery mode · a display error was detected');
   }
 }
-
 function stripRecipeCardCategoryText(){document.querySelectorAll('#recipes .photo .category-tag').forEach(el=>el.remove());document.querySelectorAll('#recipes .photo .category-icons').forEach(box=>{box.querySelectorAll('.category-badge').forEach(b=>{b.querySelectorAll(':scope > span').forEach(s=>s.remove())});box.querySelectorAll('span:not(.category-badge)').forEach(s=>s.remove());box.childNodes.forEach(n=>{if(n.nodeType===3)n.remove()})})}
 const recipeCardTextObserver=new MutationObserver(()=>stripRecipeCardCategoryText());
 recipeCardTextObserver.observe(document.getElementById('recipes'),{childList:true,subtree:true});
