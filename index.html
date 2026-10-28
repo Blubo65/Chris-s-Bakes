@@ -5804,6 +5804,11 @@ function normaliseRecipe(raw,index=0){
  if(clearlyVegetarian)dietary.add('Vegetarian');
  // Any recipe marked Vegetarian in Dietary & extras must also carry the Vegetarian category.
  if(dietary.has('Vegetarian')&&!food.includes('Vegetarian')){if(food.length>=3)food.pop();add('Vegetarian')}
+ // Low-calorie / slimming recipes must also appear in the Slimming category.
+ if(dietary.has('Lower Calorie')||titleHas(/\b(low.?calorie|lower calorie|slimming|lighter version)\b/)){
+   dietary.add('Lower Calorie');
+   if(!food.includes('Slimming')){if(food.length>=3)food.pop();add('Slimming')}
+ }
  r.categories=food.slice(0,3); r.category=r.categories[0]||'Main Meals';r.methods=[...methods].filter(x=>['Air Fryer','Oven','Slow Cooker','Hob','BBQ'].includes(x));r.dietaryTags=[...dietary].filter(x=>['Lower Calorie','Sugar-Free','Vegetarian','Vegan'].includes(x));
  r.time=String(r.time||'').trim();r.serves=String(r.serves||'').trim();r.emoji=String(r.emoji||'🍽️');r.description=String(r.description||'').trim();r.ingredients=String(r.ingredients||'').trim().replace(/,\s*\r?\n\s*(?!(?:\d|[¼½¾⅓⅔⅛⅜⅝⅞]))/g,', ');r.method=String(r.method||'').trim().replace(/,\s*\r?\n\s*/g,', ');r.notes=String(r.notes||'').trim();r.photo=typeof r.photo==='string'?r.photo:'';r.equipmentUsed=String(r.equipmentUsed||'').trim();r.tinSize=String(r.tinSize||'').trim();r.testedByChris=raw.testedByChris===true;r.lastTested=String(raw.lastTested||'').trim();
  const createdNumber=typeof r.created==='number'?r.created:Number(r.created);const createdParsed=Number.isFinite(createdNumber)&&createdNumber>0?createdNumber:(typeof r.created==='string'&&r.created.trim()?Date.parse(r.created):NaN);r.created=Number.isFinite(createdParsed)&&createdParsed>0&&createdParsed<=Date.now()+86400000?createdParsed:Date.UTC(2000,0,1)+index*1000;return r;
