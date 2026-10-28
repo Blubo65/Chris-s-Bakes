@@ -5820,7 +5820,7 @@ function normaliseRecipe(raw,index=0){
  if(!raw||typeof raw!=='object')return null;
  const r={...raw};r.id=String(r.id||newRecipeId());
  // Repair known ingredient line-break formatting whenever recipes load from Supabase or browser storage.
- r.ingredients=String(r.ingredients||'').replace(/,\s*\r?\n\s*(optional|crushed|finely chopped|chopped|sliced|peeled|deseeded and thinly sliced)\b/gi,', $1');
+ r.ingredients=String(r.ingredients||'').replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/,\s*\r?\n\s*(optional|crushed|finely chopped|chopped|sliced|peeled|deseeded and thinly sliced)\b/gi,', $1');
  r.name=String(r.name||'').replace(/\bair\s+fryer\b/ig,'').replace(/\(\s*\)/g,'').replace(/\s{2,}/g,' ').replace(/\s+([,.:;])/g,'$1').trim();
  const rawCats=(Array.isArray(r.categories)?r.categories:[r.category||'Other']).map(x=>String(x).trim()).filter(Boolean);
  const sourceText=[r.name,r.description,r.ingredients,r.method,r.notes,rawCats.join(' ')].join(' ').toLowerCase();
@@ -5863,7 +5863,7 @@ function normaliseRecipe(raw,index=0){
    if(!food.includes('Slimming')){if(food.length>=3)food.pop();add('Slimming')}
  }
  r.categories=food.slice(0,3); r.category=r.categories[0]||'Main Meals';r.methods=[...methods].filter(x=>['Air Fryer','Oven','Slow Cooker','Hob','BBQ'].includes(x));r.dietaryTags=[...dietary].filter(x=>['Lower Calorie','Sugar-Free','Vegetarian','Vegan'].includes(x));
- r.time=String(r.time||'').trim();r.serves=String(r.serves||'').trim();r.emoji=String(r.emoji||'🍽️');r.description=String(r.description||'').trim();r.ingredients=String(r.ingredients||'').trim().replace(/,\s*\r?\n\s*(?!(?:\d|[¼½¾⅓⅔⅛⅜⅝⅞]))/g,', ');r.method=String(r.method||'').trim().replace(/,\s*\r?\n\s*/g,', ');r.notes=String(r.notes||'').trim();r.photo=typeof r.photo==='string'?r.photo:'';r.equipmentUsed=String(r.equipmentUsed||'').trim();r.tinSize=String(r.tinSize||'').trim();r.testedByChris=raw.testedByChris===true;r.lastTested=String(raw.lastTested||'').trim();
+ r.time=String(r.time||'').trim();r.serves=String(r.serves||'').trim();r.emoji=String(r.emoji||'🍽️');r.description=String(r.description||'').trim();r.ingredients=String(r.ingredients||'').trim().replace(/,\s*\r?\n\s*(?!(?:\d|[¼½¾⅓⅔⅛⅜⅝⅞]))/g,', ');r.method=String(r.method||'').replace(/\\n/g,'\n').replace(/\\r/g,'\r').trim().replace(/,\s*\r?\n\s*/g,', ');r.notes=String(r.notes||'').trim();r.photo=typeof r.photo==='string'?r.photo:'';r.equipmentUsed=String(r.equipmentUsed||'').trim();r.tinSize=String(r.tinSize||'').trim();r.testedByChris=raw.testedByChris===true;r.lastTested=String(raw.lastTested||'').trim();
  const createdNumber=typeof r.created==='number'?r.created:Number(r.created);const createdParsed=Number.isFinite(createdNumber)&&createdNumber>0?createdNumber:(typeof r.created==='string'&&r.created.trim()?Date.parse(r.created):NaN);r.created=Number.isFinite(createdParsed)&&createdParsed>0&&createdParsed<=Date.now()+86400000?createdParsed:Date.UTC(2000,0,1)+index*1000;return r;
 }
 function correctedRecipeKey(r){return String(r?.name||'').trim().toLowerCase().replace(/\s+/g,' ')}
