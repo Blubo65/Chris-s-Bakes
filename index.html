@@ -5926,13 +5926,23 @@ function render(){
     if(!Array.isArray(recipes)||!recipes.length){
       recipes=STARTER_RECIPES.map((r,i)=>normaliseRecipe(r,i)).filter(r=>isCompleteRecipe(r)&&!isPermanentlyRemovedRecipe(r)&&!deletedIds.has(r.id));
     }
-    if(count)count.textContent=recipes.length+' recipe'+(recipes.length===1?'':'s');
+    const q=(document.getElementById('search')?.value||'').toLowerCase().trim();
+    const methodFilter=document.getElementById('methodFilter')?.value||'All';
+    const dietaryFilter=document.getElementById('dietaryFilter')?.value||'All';
+    const filtered=recipes.filter(r=>{
+      const cats=Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Main Meals'];
+      const methods=Array.isArray(r.methods)?r.methods:[];
+      const dietary=Array.isArray(r.dietaryTags)?r.dietaryTags:[];
+      const text=[r.name,r.description,cats.join(' '),methods.join(' '),dietary.join(' '),r.ingredients,r.method,r.notes].join(' ').toLowerCase();
+      return (!q||text.includes(q))&&(methodFilter==='All'||methods.includes(methodFilter))&&(dietaryFilter==='All'||dietary.includes(dietaryFilter))&&(active==='All'||cats.includes(active));
+    });
+    if(count)count.textContent=filtered.length+' of '+recipes.length+' recipes';
     if(filters)filters.innerHTML='';
     if(grid){
-      if(recipes.length){
-        grid.innerHTML=recipes.map(r=>'<button type="button" class="recipe" style="text-align:left;cursor:pointer" onclick="viewRecipe(\''+esc(r.id)+'\')"><div class="recipe-info"><h3>'+esc(r.name)+'</h3><p>'+esc(r.description||'From Chris’s recipe book')+'</p><div class="meta"><span>◷ '+esc(r.time||'Time varies')+'</span><span>'+esc(r.serves||'')+'</span></div></div></button>').join('');
+      if(filtered.length){
+        grid.innerHTML=filtered.map(r=>'<button type="button" class="recipe" style="text-align:left;cursor:pointer" onclick="viewRecipe(\\''+esc(r.id)+'\\')"><div class="recipe-info"><h3>'+esc(r.name)+'</h3><p>'+esc(r.description||'From Chris’s recipe book')+'</p><div class="meta"><span>◷ '+esc(r.time||'Time varies')+'</span><span>'+esc(r.serves||'')+'</span></div></div></button>').join('');
       }else{
-        grid.innerHTML='<div class="empty"><div class="emoji">⚠️</div><h3>Recipes could not be displayed</h3><p>Please refresh the page. Your saved recipes have not been deleted.</p></div>';
+        grid.innerHTML='<div class="empty"><div class="emoji">🔎</div><h3>No recipes found</h3><p>Try another recipe name or ingredient.</p></div>';
       }
     }
     setSyncStatus('Recipe display recovery mode · a display error was detected');
