@@ -5732,7 +5732,10 @@ function normaliseRecipe(raw,index=0){
  if(/\b(one.?pot|one.?pan)\b/.test(titleText))add('One Pot');
  if(!isSweetBake && !isPastaRice && !/\b(chicken|beef|pork|lamb|fish|prawn|sausage|bacon|ham|mince|turkey)\b/.test(ingredientText) && /\b(potato|cauliflower|chickpea|lentil|paneer|tofu|vegetable|spinach|aubergine|eggplant)\b/.test(ingredientText))add('Vegetarian');
  if(titleHas(/\b(vegetarian|veggie|meat.?free)\b/)&&!food.includes('Vegetarian'))add('Vegetarian');
- r.categories=food; r.category=r.categories[0]||'Main Meals';r.methods=[...methods].filter(x=>['Air Fryer','Oven','Slow Cooker','Hob','BBQ'].includes(x));r.dietaryTags=[...dietary].filter(x=>['Lower Calorie','Sugar-Free','Vegetarian','Vegan'].includes(x));
+ // Keep the Vegetarian category in sync with the Dietary & extras Vegetarian tag.
+ // The editor allows up to three categories, so preserve the first two food tags if needed.
+ if(dietary.has('Vegetarian')&&!food.includes('Vegetarian')){if(food.length>=3)food.pop();add('Vegetarian')}
+ r.categories=food.slice(0,3); r.category=r.categories[0]||'Main Meals';r.methods=[...methods].filter(x=>['Air Fryer','Oven','Slow Cooker','Hob','BBQ'].includes(x));r.dietaryTags=[...dietary].filter(x=>['Lower Calorie','Sugar-Free','Vegetarian','Vegan'].includes(x));
  r.time=String(r.time||'').trim();r.serves=String(r.serves||'').trim();r.emoji=String(r.emoji||'🍽️');r.description=String(r.description||'').trim();r.ingredients=String(r.ingredients||'').trim().replace(/,\s*\r?\n\s*(?!(?:\d|[¼½¾⅓⅔⅛⅜⅝⅞]))/g,', ');r.method=String(r.method||'').trim().replace(/,\s*\r?\n\s*/g,', ');r.notes=String(r.notes||'').trim();r.photo=typeof r.photo==='string'?r.photo:'';r.equipmentUsed=String(r.equipmentUsed||'').trim();r.tinSize=String(r.tinSize||'').trim();r.testedByChris=raw.testedByChris===true;r.lastTested=String(raw.lastTested||'').trim();
  const createdNumber=typeof r.created==='number'?r.created:Number(r.created);const createdParsed=Number.isFinite(createdNumber)&&createdNumber>0?createdNumber:(typeof r.created==='string'&&r.created.trim()?Date.parse(r.created):NaN);r.created=Number.isFinite(createdParsed)&&createdParsed>0&&createdParsed<=Date.now()+86400000?createdParsed:Date.UTC(2000,0,1)+index*1000;return r;
 }
