@@ -70,6 +70,8 @@ def recipe_page(recipe, slug):
       f'<h1>{esc(name)}</h1><p class="desc">{esc(desc)}</p>'
     ]
     if image:
+        parts.insert(3, f'<meta property="og:image" content="{esc(image)}"><meta property="og:image:alt" content="{esc(name)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{esc(image)}">')
+    if image:
         parts.append(f'<img class="recipe-image" src="{esc(image)}" alt="{esc(name)}">')
     parts.append('<h2>Ingredients</h2><ul>' + ''.join(f'<li>{esc(x)}</li>' for x in ingredients) + '</ul>')
     parts.append('<h2>Method</h2><ol>' + ''.join(f'<li>{esc(x)}</li>' for x in method) + '</ol>')
