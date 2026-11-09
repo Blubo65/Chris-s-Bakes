@@ -1,6 +1,9 @@
 name: Publish new recipe SEO pages
 
 on:
+  push:
+    paths:
+      - "scripts/generate_new_recipe_pages.py"
   workflow_dispatch:
   schedule:
     - cron: "17 * * * *"
