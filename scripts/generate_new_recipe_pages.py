@@ -29,6 +29,24 @@ def slugify(value):
 def esc(value):
     return html.escape(str(value or "").strip(), quote=True)
 
+def duration_iso(value):
+    """Convert an explicitly stored duration into Schema.org ISO 8601."""
+    if value is None or value == "":
+        return ""
+    text = str(value).lower()
+    matches = re.findall(r"(\d+)\s*(hours?|hrs?|h|minutes?|mins?|m)\b", text)
+    if not matches:
+        return ""
+    minutes = 0
+    for amount, unit in matches:
+        n = int(amount)
+        minutes += n * 60 if unit.startswith("h") else n
+    if len(matches) == 2 and re.search(r"\d+\s*[–-]\s*\d+", text):
+        minutes = max(int(matches[0][0]) * (60 if matches[0][1].startswith("h") else 1),
+                      int(matches[1][0]) * (60 if matches[1][1].startswith("h") else 1))
+    return f"PT{minutes}M" if minutes > 0 else ""
+
+
 def lines(value):
     if isinstance(value, list):
         raw = value
@@ -55,8 +73,20 @@ def recipe_page(recipe, slug):
         "description": desc, "author": {"@type": "Person", "name": "Chris"},
         "mainEntityOfPage": url, "url": url, "recipeCategory": categories,
         "recipeIngredient": ingredients,
-        "recipeInstructions": [{"@type": "HowToStep", "position": i+1, "text": x} for i, x in enumerate(method)]
+        "recipeInstructions": [{"@type": "HowToStep", "position": i+1, "name": f"Step {i+1}", "text": x} for i, x in enumerate(method)]
     }
+    total_time = duration_iso(recipe.get("time"))
+    if total_time:
+        data["totalTime"] = total_time
+    prep_time = duration_iso(recipe.get("prepTime") or recipe.get("prep_time"))
+    cook_time = duration_iso(recipe.get("cookTime") or recipe.get("cook_time"))
+    if prep_time:
+        data["prepTime"] = prep_time
+    if cook_time:
+        data["cookTime"] = cook_time
+    cuisine = recipe.get("recipeCuisine") or recipe.get("cuisine")
+    if cuisine:
+        data["recipeCuisine"] = cuisine
     if image:
         data["image"] = [image]
     title = esc(name + " | The Chidsey Chowdown")
