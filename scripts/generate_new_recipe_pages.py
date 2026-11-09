@@ -53,7 +53,7 @@ def recipe_page(recipe, slug):
     data = {
         "@context": "https://schema.org", "@type": "Recipe", "name": name,
         "description": desc, "author": {"@type": "Person", "name": "Chris"},
-        "mainEntityOfPage": url, "recipeCategory": categories,
+        "mainEntityOfPage": url, "url": url, "recipeCategory": categories,
         "recipeIngredient": ingredients,
         "recipeInstructions": [{"@type": "HowToStep", "position": i+1, "text": x} for i, x in enumerate(method)]
     }
