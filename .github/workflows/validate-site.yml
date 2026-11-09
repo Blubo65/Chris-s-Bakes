@@ -27,7 +27,7 @@ jobs:
 
           scripts = re.findall(r"<script(?![^>]*application/ld\+json)(?:\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
           inline = "\n".join(scripts)
-          m = re.search(r"const STARTER_RECIPES=(\[.*?\]);\s*const STARTER_SYNC_IDS", inline, re.S)
+          m = re.search(r"const STARTER_RECIPES\s*=\s*(\[.*?\]);\s*const STARTER_SYNC_IDS", inline, re.S)
           if not m:
               raise SystemExit("STARTER_RECIPES could not be located")
 
@@ -60,6 +60,9 @@ jobs:
 
           print(f"Validated {len(recipes)} starter recipes and {len(refs)} local image references.")
           PY
+
+      - name: Validate SEO generator Python syntax
+        run: python3 -m py_compile scripts/generate_new_recipe_pages.py
 
       - name: Validate JavaScript syntax
         run: |
