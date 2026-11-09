@@ -76,6 +76,65 @@ def recipe_page(recipe, slug):
     parts.append(f'<a class="back" href="/?recipe={esc(recipe.get("id",""))}">View this recipe in the recipe book</a></article></main></body></html>')
     return ''.join(parts)
 
+def refresh_existing_recipe_image(target, recipe):
+    """Refresh photo metadata on an existing SEO page without rebuilding its curated content."""
+    image = str(recipe.get("photo") or "").strip()
+    if not image:
+        return False
+    if not image.startswith(("https://", "http://")):
+        image = BASE + "/" + image.lstrip("/")
+    source = target.read_text(encoding="utf-8")
+    updated = source
+
+    # Keep social previews in step with the current public recipe photo.
+    def set_meta(source, attribute, key, content):
+        pattern = re.compile(
+            r'<meta\s+' + re.escape(attribute) + r'="' + re.escape(key) + r'"\s+content="[^"]*"\s*/?>',
+            re.I
+        )
+        tag = f'<meta {attribute}="{key}" content="{esc(content)}">'
+        if pattern.search(source):
+            return pattern.sub(lambda _: tag, source, count=1)
+        return re.sub(r'</head>', tag + '</head>', source, count=1, flags=re.I)
+
+    updated = set_meta(updated, "property", "og:image", image)
+    updated = set_meta(updated, "name", "twitter:image", image)
+    updated = set_meta(updated, "property", "og:image:alt", recipe.get("name") or "Recipe")
+
+    # Update the Recipe JSON-LD image used by search engines.
+    script_pattern = re.compile(
+        r'(<script\s+type="application/ld\+json"\s*>)(.*?)(</script>)',
+        re.I | re.S
+    )
+    match = script_pattern.search(updated)
+    if match:
+        try:
+            schema = json.loads(match.group(2))
+            if isinstance(schema, dict) and schema.get("@type") == "Recipe":
+                schema["image"] = [image]
+                replacement = match.group(1) + json.dumps(
+                    schema, ensure_ascii=False
+                ).replace("</", "<\\/") + match.group(3)
+                updated = updated[:match.start()] + replacement + updated[match.end():]
+        except (ValueError, TypeError):
+            pass
+
+    # Ensure the recipe page visibly displays the same photograph.
+    img_tag = f'<img class="recipe-image" src="{esc(image)}" alt="{esc(recipe.get("name") or "Recipe")}">'
+    existing_img = re.compile(r'<img\b[^>]*class="[^"]*\brecipe-image\b[^"]*"[^>]*>', re.I)
+    if existing_img.search(updated):
+        updated = existing_img.sub(lambda _: img_tag, updated, count=1)
+    else:
+        desc = re.compile(r'(<p\s+class="desc">.*?</p>)', re.I | re.S)
+        if desc.search(updated):
+            updated = desc.sub(lambda m: m.group(1) + img_tag, updated, count=1)
+
+    if updated != source:
+        target.write_text(updated, encoding="utf-8")
+        return True
+    return False
+
+
 def main():
     book = get_public_book()
     recipes = book.get("recipes", [])
@@ -99,6 +158,8 @@ def main():
         target = folder / "index.html"
         # Never replace existing hand-reviewed pages; only create pages for new recipes.
         if target.exists():
+            if refresh_existing_recipe_image(target, r):
+                print(f"Refreshed recipe photo metadata: {name}")
             continue
         page = recipe_page(r, slug)
         if not page:
