@@ -1,7 +1,7 @@
 {
-  "name": "Chris’s Recipe Book",
-  "short_name": "Chris’s Recipes",
-  "description": "Chris’s homemade recipes, family favourites and air fryer ideas.",
+  "name": "Chidsey Chowdown",
+  "short_name": "Chidsey Chowdown",
+  "description": "Easy-to-follow recipes, family favourites, air fryer ideas and helpful cooking tips.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
