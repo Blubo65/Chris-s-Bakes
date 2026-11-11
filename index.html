@@ -5853,6 +5853,8 @@ function normaliseRecipe(raw,index=0){
  const add=c=>{if(c&&!food.includes(c)&&food.length<3)food.push(c)};
  const titleText=[r.name,r.description].join(' ').toLowerCase();
  const titleHas=re=>re.test(titleText);
+ // All burger recipes also belong in the BBQ & Grilling category.
+ if(/\bburgers?\b/.test(titleText)){if(!food.includes('BBQ & Grilling')){if(food.length>=3)food.pop();add('BBQ & Grilling')}}
  const ingredientText=String(r.ingredients||'').toLowerCase();
  if(!food.length){
    if(titleHas(/\b(cake|traybake|loaf cake|tea bread|bara brith)\b/))add('Cakes & Traybakes');
