@@ -5841,7 +5841,7 @@ function normaliseRecipe(raw,index=0){
  r.ingredients=String(r.ingredients||'').replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/,\s*\r?\n\s*(optional|crushed|finely chopped|chopped|sliced|peeled|deseeded and thinly sliced)\b/gi,', $1');
  r.name=String(r.name||'').replace(/\bair\s+fryer\b/ig,'').replace(/\(\s*\)/g,'').replace(/\s{2,}/g,' ').replace(/\s+([,.:;])/g,'$1').trim();
  const rawCats=(Array.isArray(r.categories)?r.categories:[r.category||'Other']).map(x=>String(x).trim()).filter(Boolean);
- const sourceText=[r.name,r.description,r.ingredients,r.method,r.notes,rawCats.join(' ')].join(' ').toLowerCase();
+ const sourceText=[r.name,r.description,r.ingredients,r.method,rawCats.join(' ')].join(' ').toLowerCase();
  const methods=new Set(Array.isArray(r.methods)?r.methods:[]),dietary=new Set(Array.isArray(r.dietaryTags)?r.dietaryTags:[]);
  rawCats.forEach(c=>{const k=c.toLowerCase();if(/air\s*fryer|airfryer/.test(k))methods.add('Air Fryer');if(/\boven\b/.test(k))methods.add('Oven');if(/slow cooker|crockpot/.test(k))methods.add('Slow Cooker');if(/\bhob\b/.test(k))methods.add('Hob');if(/\b(bbq|barbecue|grilling)\b/.test(k))methods.add('BBQ');if(/slimming|low.?calorie|lower calorie/.test(k))dietary.add('Lower Calorie');if(/sugar.?free/.test(k))dietary.add('Sugar-Free');if(/\bvegetarian\b/.test(k))dietary.add('Vegetarian');if(/\bvegan\b/.test(k))dietary.add('Vegan')});
  if(/air\s*fry|airfryer/.test(sourceText))methods.add('Air Fryer');if(/\bslow cooker\b|crock.?pot/.test(sourceText))methods.add('Slow Cooker');if(/\bbarbecue\b|\bbbq\b|grill(?:ed|ing)?/.test(sourceText))methods.add('BBQ');if(/\boven\b|bake(?:d|s|ing)?\b/.test(String(r.method||'').toLowerCase()))methods.add('Oven');
