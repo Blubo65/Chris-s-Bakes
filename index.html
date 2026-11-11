@@ -5873,6 +5873,11 @@ function normaliseRecipe(raw,index=0){
  const clearlyVegetarian=titleHas(/\b(vegetarian|veggie|meat.?free|aloo gobi|cauliflower curry|vegetable curry|mushroom spaghetti|mac.?and.?cheese|macaroni cheese|cheese scones?|ploughmans scones?|garlic parmesan potatoes|masala fries|hummus|lentil|chickpea|paneer|tofu)\b/) ||
    (!hasMeatOrFish && /\b(potato|cauliflower|chickpea|lentil|paneer|tofu|vegetable|spinach|aubergine|eggplant|mushroom|cheese|egg|beans?|peas?|broccoli|courgette|zucchini|pepper|tomato)\b/.test(ingredientText));
  if(clearlyVegetarian)dietary.add('Vegetarian');
+ // This ice cream recipe is not Lower Calorie; clear any stale tag saved by older versions.
+ if(r.id==='raindrop-homemade-vanilla-ice-cream'||r.name.toLowerCase()==='easy homemade vanilla ice cream'){
+   dietary.delete('Lower Calorie');
+   const slimmingIndex=food.indexOf('Slimming');if(slimmingIndex!==-1)food.splice(slimmingIndex,1);
+ }
  // Dietary flags that should also appear in the category filters remain mirrored.
  if(dietary.has('Vegetarian')&&!food.includes('Vegetarian')){if(food.length>=3)food.pop();add('Vegetarian')}
  if(dietary.has('Lower Calorie')||titleHas(/\b(low.?calorie|lower calorie|slimming|lighter version)\b/)){
