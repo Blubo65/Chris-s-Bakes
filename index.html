@@ -5882,6 +5882,10 @@ function normaliseRecipe(raw,index=0){
    dietary.delete('Lower Calorie');
    const slimmingIndex=food.indexOf('Slimming');if(slimmingIndex!==-1)food.splice(slimmingIndex,1);
  }
+ if(r.id==='library-recipe-8'||r.name.toLowerCase()==='lemon cookies (standard ingredients)'){
+   dietary.delete('Lower Calorie');
+   const slimmingIndex=food.indexOf('Slimming');if(slimmingIndex!==-1)food.splice(slimmingIndex,1);
+ }
  // Dietary flags that should also appear in the category filters remain mirrored.
  if(dietary.has('Vegetarian')&&!food.includes('Vegetarian')){if(food.length>=3)food.pop();add('Vegetarian')}
  if(dietary.has('Lower Calorie')||titleHas(/\b(low.?calorie|lower calorie|slimming|lighter version)\b/)){
