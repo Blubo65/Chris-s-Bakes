@@ -6084,7 +6084,8 @@ function showFavourites(){const favs=recipes.filter(r=>favouriteIds.has(r.id));i
 function saveShoppingList(){localStorage.setItem(SHOP_KEY,JSON.stringify(shoppingItems));}
 function normaliseIngredient(text){return String(text||'').replace(/^[-•*]\s*/,'').trim();}
 function shoppingIngredientParts(line){
- let text=normaliseIngredient(line).replace(/\s+/g,' ').trim();
+ let text=normaliseIngredient(line).replace(/\s+/g,' ').trim().replace(/[,;]+\s*$/,'');
+ text=text.replace(/\b(?:rinsed|drained|washed|trimmed|seeded|deseeded|halved|quartered|cooked)\b(?=\s*[,;]|\s*$)/gi,'');
  text=text.replace(/\b(?:very finely|finely|roughly|coarsely|freshly)\s+(?=chopped|diced|crushed|minced|sliced|grated|shredded|cubed|peeled)\b/gi,'');
  text=text.replace(/\b(?:chopped|diced|crushed|minced|sliced|grated|shredded|cubed|peeled|roughly|finely)\b/gi,'').replace(/\s*,\s*/g,' ').replace(/\s+/g,' ').trim();
  const fraction={'½':0.5,'¼':0.25,'¾':0.75,'⅓':1/3,'⅔':2/3,'⅛':0.125};
@@ -6092,7 +6093,8 @@ function shoppingIngredientParts(line){
  const m=text.match(/^(\d+(?:\.\d+)?|\d+\/\d+)\s*(kg|g|grams?|kilograms?|ml|millilitres?|l|litres?|tbsp|tablespoons?|tsp|teaspoons?|oz|lb|lbs|cloves?|cans?|tins?|packs?|packets?|pieces?|large|medium|small)?\b\s*(?:of\s+)?(.+)$/i);
  if(!m)return {key:text.toLowerCase(),name:text,amount:null,unit:''};
  let amount=m[1].includes('/')?m[1].split('/').reduce((a,b)=>Number(a)/Number(b)):Number(m[1]);
- let unit=(m[2]||'').toLowerCase(),name=m[3].trim();
+ let unit=(m[2]||'').toLowerCase(),name=m[3].trim().replace(/[,;]+\s*$/,'');
+ name=name.replace(/\b(?:onions|peppers|mushrooms|tomatoes|carrots|potatoes|cloves)\b$/i,w=>({onions:'onion',peppers:'pepper',mushrooms:'mushroom',tomatoes:'tomato',carrots:'carrot',potatoes:'potato',cloves:'clove'})[w.toLowerCase()]||w);
  if(['large','medium','small'].includes(unit)){name=unit+' '+name;unit='';}
  if(['kg','kilogram','kilograms'].includes(unit)){amount*=1000;unit='g';}
  if(['gram','grams'].includes(unit))unit='g';
@@ -6101,6 +6103,8 @@ function shoppingIngredientParts(line){
  if(['tablespoon','tablespoons'].includes(unit))unit='tbsp';
  if(['teaspoon','teaspoons'].includes(unit))unit='tsp';
  if(['clove','cloves'].includes(unit))unit='cloves';
+ if(!unit&&/^(?:garlic\s+)?cloves?\s*(?:of\s+)?garlic$/i.test(name)){name='garlic';unit='cloves';}
+ if(!unit&&/^garlic\s+cloves?$/i.test(name)){name='garlic';unit='cloves';}
  if(['tin','tins'].includes(unit))unit='tins';
  if(['can','cans'].includes(unit))unit='cans';
  if(['pack','packs','packet','packets'].includes(unit))unit='packs';
@@ -6114,7 +6118,7 @@ function shoppingIngredientText(p){if(p.amount===null)return p.name;const n=Math
 function addShoppingItems(lines){
  const now=Date.now();
  const combined=new Map();
- [...shoppingItems.map(x=>({item:x,original:true})),...lines.map(normaliseIngredient).filter(Boolean).map(text=>({item:{id:now+'-'+Math.random().toString(36).slice(2),text,done:false},original:false}))].forEach(({item,original})=>{
+ [...shoppingItems.map(x=>({item:x,original:true})),...lines.flatMap(line=>String(line).split(/\s*[,;]\s*(?=(?:\d+(?:\.\d+)?|[½¼¾])\s*(?:g\b|ml\b|kg\b|tsp\b|tbsp\b|[a-z]))/i)).map(normaliseIngredient).filter(Boolean).map(text=>({item:{id:now+'-'+Math.random().toString(36).slice(2),text,done:false},original:false}))].forEach(({item,original})=>{
   const p=shoppingIngredientParts(item.text);
   if(!p.name)return;
   const key=p.key+'|'+p.unit+'|'+(p.amount===null?'unmeasured':'measured');
@@ -6128,7 +6132,7 @@ function addShoppingItems(lines){
  saveShoppingList();renderShoppingList();
 }
 function addRecipeIngredientsToList(id){const r=recipes.find(x=>x.id===id);if(!r)return;addShoppingItems(String(r.ingredients||'').split('\n'));alert('Ingredients added to your shopping list.');}
-function openShoppingList(){renderShoppingList();document.getElementById('shoppingModal').classList.add('open');}
+function openShoppingList(){addShoppingItems([]);document.getElementById('shoppingModal').classList.add('open');}
 function renderShoppingList(){const box=document.getElementById('shoppingList');if(!box)return;const remaining=shoppingItems.filter(x=>!x.done).length;document.getElementById('shoppingCount').textContent=shoppingItems.length+' item'+(shoppingItems.length===1?'':'s')+(remaining<shoppingItems.length?' · '+remaining+' to buy':'');box.innerHTML=shoppingItems.length?shoppingItems.map(x=>'<label class="shopping-item '+(x.done?'done':'')+'"><input type="checkbox" '+(x.done?'checked':'')+' onchange="toggleShoppingItem(\''+x.id+'\')"><span>'+esc(x.text)+'</span><button class="button secondary small" type="button" onclick="event.preventDefault();event.stopPropagation();removeShoppingItem(\''+x.id+'\')">×</button></label>').join(''):'<div class="shopping-empty">Your shopping list is empty.<br>Open a recipe and tap <strong>🛒 Add ingredients</strong>.</div>';}
 function toggleShoppingItem(id){const x=shoppingItems.find(i=>i.id===id);if(x)x.done=!x.done;saveShoppingList();renderShoppingList();}
 function removeShoppingItem(id){shoppingItems=shoppingItems.filter(x=>x.id!==id);saveShoppingList();renderShoppingList();}
