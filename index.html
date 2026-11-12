@@ -6082,14 +6082,14 @@ function isFavourite(id){return favouriteIds.has(id)}
 function toggleFavourite(id){const savedScrollY=window.scrollY;const savedScrollX=window.scrollX;if(favouriteIds.has(id))favouriteIds.delete(id);else favouriteIds.add(id);saveFavourites();const modalOpen=document.getElementById('viewModal')?.classList.contains('open');if(modalOpen){viewRecipe(id);return;}document.querySelectorAll('.fav-button').forEach(btn=>{const handler=btn.getAttribute('onclick')||'';if(!handler.includes("toggleFavourite('"+id+"')"))return;const fav=isFavourite(id);btn.classList.toggle('active',fav);btn.textContent=fav?'♥':'♡';btn.setAttribute('aria-label',fav?'Remove from favourites':'Add to favourites');btn.setAttribute('title',fav?'Remove from favourites':'Add to favourites');});requestAnimationFrame(()=>window.scrollTo(savedScrollX,savedScrollY));}
 function showFavourites(){const favs=recipes.filter(r=>favouriteIds.has(r.id));if(!favs.length){alert('You have not added any favourites yet. Tap ♡ on a recipe to add one.');return}document.getElementById('search').value='';active='All';render();const box=document.getElementById('recipes');box.innerHTML=favs.map(r=>`<article class="recipe" onclick="viewRecipe('${r.id}')"><div class="photo ${correctedCropClass(r)} ${embeddedLabelCropClass(r)}"><button class="fav-button active" type="button" aria-label="Remove from favourites" title="Remove from favourites" onclick="event.preventDefault();event.stopPropagation();toggleFavourite('${r.id}');return false;">♥</button>${displayPhotoFor(r)?`<img src="${displayPhotoFor(r)}" alt="${esc(r.name)}">`:`<span class="emoji">${esc(r.emoji||'🍽️')}</span>`}<span class="category-icons">${(Array.isArray(r.categories)&&r.categories.length?r.categories:[r.category||'Other']).map(c=>categoryCardBadge(c)).join('')}</span></div><div class="recipe-info"><h3>${esc(r.name)}</h3><div class="description">${esc(r.description||'A favourite from your recipe book.')}</div><div class="meta"><span>◷ ${esc(r.time||'Time varies')}</span><span>♧ ${esc(r.serves||'')}</span></div></div></article>`).join('');box.scrollIntoView({behavior:'smooth',block:'start'});}
 function saveShoppingList(){localStorage.setItem(SHOP_KEY,JSON.stringify(shoppingItems));}
-function normaliseIngredient(text){return String(text||'').replace(/^[-•*]\\s*/,'').trim();}
+function normaliseIngredient(text){return String(text||'').replace(/^[-•*]\s*/,'').trim();}
 function shoppingIngredientParts(line){
- let text=normaliseIngredient(line).replace(/\\s+/g,' ').trim();
- text=text.replace(/\\b(?:very finely|finely|roughly|coarsely|freshly)\\s+(?=chopped|diced|crushed|minced|sliced|grated|shredded|cubed|peeled)\\b/gi,'');
- text=text.replace(/\\b(?:chopped|diced|crushed|minced|sliced|grated|shredded|cubed|peeled|roughly|finely)\\b/gi,'').replace(/\\s*,\\s*/g,' ').replace(/\\s+/g,' ').trim();
+ let text=normaliseIngredient(line).replace(/\s+/g,' ').trim();
+ text=text.replace(/\b(?:very finely|finely|roughly|coarsely|freshly)\s+(?=chopped|diced|crushed|minced|sliced|grated|shredded|cubed|peeled)\b/gi,'');
+ text=text.replace(/\b(?:chopped|diced|crushed|minced|sliced|grated|shredded|cubed|peeled|roughly|finely)\b/gi,'').replace(/\s*,\s*/g,' ').replace(/\s+/g,' ').trim();
  const fraction={'½':0.5,'¼':0.25,'¾':0.75,'⅓':1/3,'⅔':2/3,'⅛':0.125};
- text=text.replace(/^([0-9]+)\\s*([½¼¾⅓⅔⅛])/,(_,a,b)=>String(Number(a)+fraction[b])).replace(/^([½¼¾⅓⅔⅛])/,(_,b)=>String(fraction[b]));
- const m=text.match(/^(\\d+(?:\\.\\d+)?|\\d+\\/\\d+)\\s*(kg|g|grams?|kilograms?|ml|millilitres?|l|litres?|tbsp|tablespoons?|tsp|teaspoons?|oz|lb|lbs|cloves?|cans?|tins?|packs?|packets?|pieces?|large|medium|small)?\\b\\s*(?:of\\s+)?(.+)$/i);
+ text=text.replace(/^([0-9]+)\s*([½¼¾⅓⅔⅛])/,(_,a,b)=>String(Number(a)+fraction[b])).replace(/^([½¼¾⅓⅔⅛])/,(_,b)=>String(fraction[b]));
+ const m=text.match(/^(\d+(?:\.\d+)?|\d+\/\d+)\s*(kg|g|grams?|kilograms?|ml|millilitres?|l|litres?|tbsp|tablespoons?|tsp|teaspoons?|oz|lb|lbs|cloves?|cans?|tins?|packs?|packets?|pieces?|large|medium|small)?\b\s*(?:of\s+)?(.+)$/i);
  if(!m)return {key:text.toLowerCase(),name:text,amount:null,unit:''};
  let amount=m[1].includes('/')?m[1].split('/').reduce((a,b)=>Number(a)/Number(b)):Number(m[1]);
  let unit=(m[2]||'').toLowerCase(),name=m[3].trim();
@@ -6107,7 +6107,7 @@ function shoppingIngredientParts(line){
  if(['piece','pieces'].includes(unit))unit='pieces';
  if(unit==='lbs')unit='lb';
  if(!name)return {key:text.toLowerCase(),name:text,amount:null,unit:''};
- const key=name.toLowerCase().replace(/\\s+/g,' ').trim();
+ const key=name.toLowerCase().replace(/\s+/g,' ').trim();
  return {key, name, amount,unit};
 }
 function shoppingIngredientText(p){if(p.amount===null)return p.name;const n=Math.round(p.amount*100)/100;return n+(p.unit?(p.unit==='g'||p.unit==='ml'||p.unit==='kg'||p.unit==='l'||p.unit==='oz'||p.unit==='lb'?'':' ')+p.unit+' ':' ')+p.name;}
