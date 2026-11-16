@@ -6147,7 +6147,7 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredIns
 window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;const b=document.getElementById('installAppBtn');if(b)b.hidden=true;});
 function isAppleMobile(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
 async function installApp(){if(isAppleMobile()){alert('Install The Chidsey Chowdown on your iPad:\n\n1. Tap the Share button in Safari (the square with the arrow).\n2. Scroll down and tap “Add to Home Screen”.\n3. Tap “Add”.\n\nThe Chidsey Chowdown will then appear on your Home Screen like an app.');return}if(!deferredInstallPrompt){alert('If your browser supports installation, use its Share/Add to Home Screen or Install option.');return}deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;}
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=44',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{}));
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=45',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{}));
 function isAirFryerRecipe(r){const cats=Array.isArray(r?.categories)?r.categories:[r?.category||''];return cats.some(c=>String(c).toLowerCase().includes('air fryer'))||/air\s*fry/i.test((r?.method||'')+' '+(r?.notes||''));}
 function parseBaseServings(r){const m=String(r?.serves||'').match(/\d+(?:\.\d+)?/);return m?Math.max(1,Math.round(parseFloat(m[0]))):4;}
 let cookRecipeId=null,cookStepIndex=0,cookServingsValue=4,cookTimerSeconds=0,cookTimerHandle=null,cookAlarmHandle=null,cookAudioContext=null;
@@ -6218,7 +6218,7 @@ function printRecipe(id){
  const w=window.open('','_blank');if(!w){alert('Please allow pop-ups to print this recipe.');return}
  const ingredients=formatIngredientLines(r.ingredients).map(x=>'<li>'+esc(x)+'</li>').join('');
  const steps=formatMethodLines(r.method).map(x=>x.replace(/^\d{1,2}[.)]\s*/,'').trim()).filter(Boolean);
- const method=steps.map((step,i)=>'<article class="step-card"><h3>'+(i+1)+'. '+esc(step.split(/(?<=[.!?])\s+/)[0].slice(0,65))+'</h3><p>'+esc(step)+'</p></article>').join('');
+ const method=steps.map((step,i)=>'<article class="step-card"><p><strong>'+(i+1)+'.</strong> '+esc(step)+'</p></article>').join('');
  const photo=displayPhotoFor(r);
  const details=[r.serves?'🍽️ Makes / Serves: '+esc(r.serves):'',r.time?'⏱️ Total time: '+esc(r.time):'',r.tinSize?'🥧 Tin size: '+esc(r.tinSize):'',r.category?'📖 Category: '+esc(r.category):''].filter(Boolean).map(x=>'<div>'+x+'</div>').join('');
  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(r.name)}</title><style>
